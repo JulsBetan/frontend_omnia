@@ -6,19 +6,18 @@
           <div class="modal-header border-0 mb-2 text-center">
             <img src="/assets/images/balon2.png" width="300px" alt="logo" />
           </div>
-          <form @submit.prevent="handleLogin">
+          <form @submit.prevent="handleSignup">
             <div class="modal-body">
-                <h3 class="mb-4 title">Tus pronosticos de partidos <br>
-                  de acuerdo al clima</h3>
+              <h3 class="mb-4 title">Crear una nueva cuenta</h3>
               <div class="form-group">
                 <input
                   type="text"
                   v-model="email"
-                  id="userName"
+                  id="email"
                   class="form-control"
                   required
                 />
-                <label class="form-control-placeholder" for="userName">Correo Electrónico</label>
+                <label class="form-control-placeholder" for="email">Correo Electrónico</label>
               </div>
               <div class="form-group">
                 <input
@@ -30,8 +29,6 @@
                 />
                 <label class="form-control-placeholder" for="password">Password</label>
               </div>
-              <label class="tc">
-                By signing up I accept the <strong>Terms & Conditions</strong> </label>
             </div>
             <div class="modal-footer border-0 text-center">
               <button
@@ -39,10 +36,10 @@
                 class="btn signin btn-block"
                 :disabled="!formValid"
               >
-                Sing In
+                Sing Up
               </button>
               <p class="register-link">
-                ¿No tienes una cuenta? <a @click="redirectToSignup">Registrarse</a>
+                ¿Ya tienes una cuenta? <a @click="redirectToLogin">Regresar</a>
               </p>
             </div>
           </form>
@@ -54,41 +51,79 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import axios from "axios";
+import Swal from "sweetalert2";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "Login",
+  name: "Signup",
   setup() {
     const router = useRouter();
     const email = ref<string>("");
     const password = ref<string>("");
+    const error = ref<string>("");
 
-    const formValid = computed(() => email.value !== "" && password.value !== "");
+    const formValid = computed(() => {
+      return email.value.trim() !== "" && password.value.trim() !== "";
+    });
 
-    const handleLogin = () => {
-      if (email.value === "test@example.com" && password.value === "123456") {
-        router.push("/partidos");
-      } else {
-        alert("Usuario o contraseña incorrectos");
+    const handleSignup = async () => {
+      try {
+        const response = await axios.post("http://localhost:8000/users/register", {
+          email: email.value,
+          password: password.value,
+        });
+
+        if (response.data.result === "success") {
+          Swal.fire({
+            icon: "success",
+            title: "Registro exitoso",
+            text: "Usuario registrado correctamente.",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+
+          // Redirige a la pantalla de login después de 2 segundos
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
+        } else if (response.data.result === "Email previamente registrado") {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "El correo ya está registrado.",
+            confirmButtonText: "OK",
+          });
+        }
+      } catch (err) {
+        error.value = "Hubo un error al registrar el usuario. Por favor, intenta nuevamente.";
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.value,
+          confirmButtonText: "OK",
+        });
       }
     };
 
-    const redirectToSignup = () => {
-      router.push("/signup");
+    const redirectToLogin = () => {
+      router.push("/login");
     };
 
     return {
       email,
       password,
       formValid,
-      handleLogin,
-      redirectToSignup,
+      handleSignup,
+      redirectToLogin,
+      error,
     };
   },
 });
 </script>
 
 <style scoped>
+/* Usa los mismos estilos que en Login.vue */
 /* Fondo exterior (blanco) */
 .auth-background {
   background: transparent; /* Fondo blanco */
@@ -182,4 +217,5 @@ export default defineComponent({
   background: grey;
   cursor: not-allowed;
 }
+
 </style>
