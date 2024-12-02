@@ -55,6 +55,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 export default defineComponent({
   name: "Login",
@@ -63,13 +65,39 @@ export default defineComponent({
     const email = ref<string>("");
     const password = ref<string>("");
 
-    const formValid = computed(() => email.value !== "" && password.value !== "");
+    const formValid = computed(() => email.value.trim() !== "" && password.value.trim() !== "");
 
-    const handleLogin = () => {
-      if (email.value === "test@example.com" && password.value === "123456") {
-        router.push("/partidos");
-      } else {
-        alert("Usuario o contraseña incorrectos");
+    const handleLogin = async () => {
+      try {
+        const response = await axios.post("http://localhost:8000/users/login", {
+          email: email.value,
+          password: password.value,
+        });
+
+        if (response.data.access_token) {
+          Swal.fire({
+            icon: "success",
+            title: "Login exitoso",
+            text: "Bienvenido!",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+
+          // Guardar el token de acceso en el localStorage o sesión
+          localStorage.setItem("access_token", response.data.access_token);
+
+          // Redirigir a la página de partidos
+          setTimeout(() => {
+            router.push("/partidos");
+          }, 2000);
+        }
+      } catch (error: any) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.response?.data?.detail || "Credenciales incorrectas. Intenta de nuevo.",
+          confirmButtonText: "OK",
+        });
       }
     };
 

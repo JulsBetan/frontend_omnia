@@ -91,7 +91,7 @@ export default defineComponent({
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: "El correo ya está registrado.",
+            text: "Email previamente registrado.",
             confirmButtonText: "OK",
           });
         }

@@ -4,7 +4,7 @@
       <img src="/assets/images/balon2.png" alt="logo" />
     </div>
     <div class="right-panel">
-      <div class="top-bar">Panel Superior</div>
+      <div class="top-bar">Liga Espanola</div>
       <div class="content">
         <h2>Próximos Partidos</h2>
         <ul>
