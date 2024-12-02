@@ -4,14 +4,20 @@
       <img src="/assets/images/balon2.png" alt="logo" />
     </div>
     <div class="right-panel">
-      <div class="top-bar">Liga Espanola</div>
+      <div class="top-bar">Liga Española</div>
       <div class="content">
         <h2>Próximos Partidos</h2>
-        <ul>
-          <li v-for="(partido, index) in partidos" :key="index">
-            {{ partido.fecha }}: {{ partido.local }} vs {{ partido.visitante }}
+        <ul v-if="eventos.length > 0">
+          <li v-for="(partido, index) in eventos" :key="index">
+            <router-link 
+              :to="{ name: 'DetalleEvento', params: { id: partido.idEvent } }"
+              class="evento-link"
+            >
+              {{ partido.dateEvent }}: {{ partido.strHomeTeam }} vs {{ partido.strAwayTeam }}
+            </router-link>
           </li>
         </ul>
+        <p v-else>Cargando partidos...</p>
       </div>
     </div>
   </div>
@@ -19,30 +25,44 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
+import axios from "axios";
 
 export default defineComponent({
   name: "Partidos",
   setup() {
-    const partidos = ref<
-      { fecha: string; local: string; visitante: string }[]
-    >([]);
+    const eventos = ref<any[]>([]);
+
+    const fetchEventos = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/events/next");
+        console.log("Eventos recibidos:", response.data); // Verifica la estructura de los datos
+        eventos.value = response.data;
+        localStorage.setItem("eventos", JSON.stringify(response.data));
+      } catch (error) {
+        console.error("Error al obtener eventos:", error);
+      }
+    };
 
     onMounted(() => {
-      partidos.value = [
-        { fecha: "2014-12-29", local: "Liverpool", visitante: "Swansea" },
-        { fecha: "2014-12-29", local: "Arsenal", visitante: "Chelsea" },
-        { fecha: "2014-12-30", local: "Manchester City", visitante: "Everton" },
-        { fecha: "2014-12-31", local: "Tottenham", visitante: "Leicester" },
-      ];
+      fetchEventos();
     });
 
-    return { partidos };
+    return { eventos };
   },
 });
 </script>
 
 <style scoped>
-/* Estilos del componente */
+.evento-link {
+  text-decoration: none;
+  color: blue;
+  font-weight: bold;
+}
+
+.evento-link:hover {
+  text-decoration: underline;
+}
+
 .partidos-container {
   display: flex;
   height: 100%;
@@ -92,20 +112,19 @@ li {
   border-radius: 5px;
 }
 
-ul li {
-  color: blue; /* Cambia el texto de la lista a blanco */
-  font-size: 16px; /* Ajusta el tamaño */
-  font-weight: bold; /* Resalta el texto */
-  padding: 10px;
-  margin: 10px 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+router-link {
+  color: blue;
+  text-decoration: none;
+}
+
+router-link:hover {
+  text-decoration: underline;
 }
 
 h2 {
-  color: blue; /* Cambia el color del título a blanco */
+  color: blue;
   font-size: 24px;
   margin-bottom: 20px;
-  text-align: center; /* Centra el título */
+  text-align: center;
 }
 </style>

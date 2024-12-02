@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../components/Auth/Login.vue";
 import Signup from "../components/Auth/Signup.vue";
 import Partidos from "../components/Partidos/Partidos.vue";
+import Detalle from "../components/Partidos/Detalle.vue";
 import axios from "axios";
 
 const routes = [
@@ -9,6 +10,7 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/signup", component: Signup },
   { path: "/partidos", component: Partidos, meta: { requiresAuth: true }, },
+  { path: "/partidos/:id", name: "DetalleEvento", component: Detalle, meta: { requiresAuth: true }, props:  true },
 ];
 
 const router = createRouter({
