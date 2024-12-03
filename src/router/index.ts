@@ -5,6 +5,12 @@ import Partidos from "../components/Partidos/Partidos.vue";
 import Detalle from "../components/Partidos/Detalle.vue";
 import axios from "axios";
 
+const URL_DEPORTES = import.meta.env.VITE_API_DEPORTES_URL;
+
+if (!URL_DEPORTES) {
+  console.error("VITE_API_DEPORTES_URL no está definida en las variables de entorno.");
+}
+
 const routes = [
   { path: "/", component: Login },
   { path: "/login", component: Login },
@@ -29,7 +35,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       try {
         console.log("Validating token with backend...");
-        const response = await axios.post("http://localhost:8000/users/validate-token", { token });
+        const response = await axios.post(`${URL_DEPORTES}/users/validate-token`, { token });
         if (response.data.valid) {
           console.log("Token valid. Proceeding to route.");
           next();

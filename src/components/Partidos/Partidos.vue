@@ -29,6 +29,12 @@
 import { defineComponent, ref, onMounted } from "vue";
 import axios from "axios";
 
+const URL_DEPORTES = import.meta.env.VITE_API_DEPORTES_URL;
+
+if (!URL_DEPORTES) {
+  console.error("VITE_API_DEPORTES_URL no está definida en las variables de entorno.");
+}
+
 export default defineComponent({
   name: "Partidos",
   setup() {
@@ -46,7 +52,7 @@ export default defineComponent({
         }
 
         console.log("Solicitando eventos desde la API...");
-        const response = await axios.get("http://localhost:8000/events/next");
+        const response = await axios.get(`${URL_DEPORTES}/events/next`);
         eventos.value = response.data;
 
         // Guardar en localStorage

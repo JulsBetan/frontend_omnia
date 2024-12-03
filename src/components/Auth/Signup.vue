@@ -55,6 +55,12 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useRouter } from "vue-router";
 
+const URL_DEPORTES = import.meta.env.VITE_API_DEPORTES_URL;
+
+if (!URL_DEPORTES) {
+  console.error("VITE_API_DEPORTES_URL no está definida en las variables de entorno.");
+}
+
 export default defineComponent({
   name: "Signup",
   setup() {
@@ -69,7 +75,7 @@ export default defineComponent({
 
     const handleSignup = async () => {
       try {
-        const response = await axios.post("http://localhost:8000/users/register", {
+        const response = await axios.post(`${URL_DEPORTES}/users/register`, {
           email: email.value,
           password: password.value,
         });
