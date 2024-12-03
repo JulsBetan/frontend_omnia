@@ -4,9 +4,11 @@
       <img src="/assets/images/balon2.png" alt="logo" />
     </div>
     <div class="right-panel">
-      <div class="top-bar">Liga Española</div>
+      <div class="top-bar">
+        Próximos Partidos
+        <button @click="fetchEventos(true)" class="update-button">Actualizar</button>
+      </div>
       <div class="content">
-        <h2>Próximos Partidos</h2>
         <ul v-if="eventos.length > 0">
           <li v-for="(partido, index) in eventos" :key="index">
             <router-link 
@@ -32,11 +34,22 @@ export default defineComponent({
   setup() {
     const eventos = ref<any[]>([]);
 
-    const fetchEventos = async () => {
+    const fetchEventos = async (forceUpdate = false) => {
       try {
+        if (!forceUpdate) {
+          const cachedEventos = localStorage.getItem("eventos");
+          if (cachedEventos) {
+            console.log("Usando eventos de localStorage");
+            eventos.value = JSON.parse(cachedEventos);
+            return;
+          }
+        }
+
+        console.log("Solicitando eventos desde la API...");
         const response = await axios.get("http://localhost:8000/events/next");
-        console.log("Eventos recibidos:", response.data); // Verifica la estructura de los datos
         eventos.value = response.data;
+
+        // Guardar en localStorage
         localStorage.setItem("eventos", JSON.stringify(response.data));
       } catch (error) {
         console.error("Error al obtener eventos:", error);
@@ -47,15 +60,31 @@ export default defineComponent({
       fetchEventos();
     });
 
-    return { eventos };
+    return { eventos, fetchEventos };
   },
 });
 </script>
 
 <style scoped>
+/* Nuevo botón */
+.update-button {
+  background: linear-gradient(to right, #08b0df, #222291);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.update-button:hover {
+  background: linear-gradient(to right, #222291, #08b0df);
+}
+
 .evento-link {
   text-decoration: none;
-  color: blue;
+  color: black;
   font-weight: bold;
 }
 
@@ -66,6 +95,8 @@ export default defineComponent({
 .partidos-container {
   display: flex;
   height: 100%;
+  height: 100vh; /* Ajusta la altura total de la vista */
+  overflow: hidden;
 }
 
 .left-panel {
@@ -84,6 +115,7 @@ export default defineComponent({
   width: 80%;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .top-bar {
@@ -91,12 +123,15 @@ export default defineComponent({
   color: white;
   padding: 10px;
   text-align: center;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .content {
   flex: 1;
   padding: 20px;
   background: #f4f4f4;
+  overflow-y: auto;
 }
 
 ul {
@@ -107,7 +142,7 @@ ul {
 li {
   padding: 10px;
   margin: 10px 0;
-  background: white;
+  background: rgba(0, 0, 0, 0.05);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }

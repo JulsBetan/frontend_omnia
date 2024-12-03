@@ -1,7 +1,15 @@
 <template>
   <div class="detalle-container" v-if="evento">
     <div class="left-panel">
-      <img src="/assets/images/balon2.png" alt="logo" class="logo-balon" />
+      <div class="logo-container">
+        <img src="/assets/images/balon2.png" alt="logo" class="logo-balon" />
+      </div>
+      <div class="clima-info">
+        <h3>Clima del Partido</h3>
+        <p><strong>Temperatura:</strong> {{ evento.clima.temperature }}°C</p>
+        <p><strong>Viento:</strong> {{ evento.clima.wind_speed }} km/h</p>
+        <p><strong>Descripción:</strong> {{ evento.clima.description }}</p>
+      </div>
     </div>
     <div class="right-panel">
       <div class="top-bar">Información del Partido</div>
@@ -15,6 +23,12 @@
 
         <!-- Tabla de información -->
         <table>
+          <thead>
+            <tr>
+              <th>Campo</th>
+              <th>Información</th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <th>Fecha</th>
@@ -36,19 +50,11 @@
               <th>Estadio</th>
               <td>{{ evento.strVenue }}</td>
             </tr>
-            <tr>
-              <th>Clima</th>
-              <td>
-                Temperatura: {{ evento.clima.temperature }}°C<br />
-                Viento: {{ evento.clima.wind_speed }} km/h<br />
-                Descripción: {{ evento.clima.description }}
-              </td>
-            </tr>
           </tbody>
         </table>
 
         <!-- Pronóstico AI -->
-        <div class="pronostico-ai">
+        <div class="pronostico">
           <h3>Pronóstico AI</h3>
           <p>{{ evento.pronostico }}</p>
         </div>
@@ -94,26 +100,54 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Contenedor principal */
 .detalle-container {
   display: flex;
   height: 100%;
 }
 
-/* Panel izquierdo */
 .left-panel {
   width: 20%;
   background: linear-gradient(to right, #1cb5e0, #000046);
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: space-between; /* Centramos el contenido verticalmente */
+  position: relative;
+  padding: 20px;
+}
+
+.logo-container {
+  flex-grow: 1;
+  display: flex;
   justify-content: center;
+  align-items: center;
 }
 
-.left-panel img {
+.logo-balon {
   width: 80%;
+  max-width: 150px;
 }
 
-/* Panel derecho */
+.clima-info {
+  margin-top: auto; /* Empuja el cuadro de clima hacia el final del panel */
+  width: 100%;
+  background: transparent;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+.clima-info h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.clima-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
 .right-panel {
   width: 80%;
   display: flex;
@@ -123,10 +157,9 @@ export default defineComponent({
 .top-bar {
   background: #222291;
   color: white;
-  padding: 10px;
+  padding: 5px;
   text-align: center;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 18px;
 }
 
 .content {
@@ -135,78 +168,72 @@ export default defineComponent({
   background: #f4f4f4;
 }
 
-/* Tabla de información */
+.team-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.team-logo {
+  width: 20%;
+  max-width: 150px;
+  object-fit: contain;
+  margin: 0 10px;
+}
+
+.vs-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+  margin: 0 10px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  margin-top: 30px;
 }
 
 th,
 td {
-  padding: 5px; /* Reduce el tamaño de las filas */
+  padding: 10px;
   border: 1px solid #ccc;
 }
 
 th {
   background: #222291;
   color: white;
-  text-align: left;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 td {
   background: white;
   color: black;
-  text-align: center;
 }
 
-/* Imágenes de los equipos */
-.team-logos {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
+.pronostico {
+  margin-top: 20px;
+  background: #f4f4f4;
+  border-radius: 10px;
+  padding: 10px;
 }
 
-.team-logo {
-  width: 25%;
-  max-width: 180px;
-  object-fit: contain;
-  margin: 0 20px;
-}
-
-.vs-text {
-  font-size: 24px;
-  font-weight: bold;
-  color: black;
-  margin: 0 10px;
-}
-
-/* Pronóstico AI */
-.pronostico-ai {
-  margin-top: 0px;
-  padding: 5px;
-  background: rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-}
-
-.pronostico-ai h3 {
+.pronostico h3 {
   color: #222291;
   font-size: 20px;
   margin-bottom: 10px;
+  text-align: center;
 }
 
-.pronostico-ai p {
+.pronostico p {
   font-size: 16px;
-  color: black;
   text-align: justify;
+  color: black;
 }
 
-/* Botón */
 .back-button {
-  margin-top: 10px;
   background: linear-gradient(to right, #08b0df, #222291);
   border: none;
   color: white;
