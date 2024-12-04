@@ -54,5 +54,5 @@ router.beforeEach(async (to, _, next) => {
     next();
   }
 });
-
+ 
 export default router;
