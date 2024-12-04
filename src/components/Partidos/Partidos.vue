@@ -9,17 +9,46 @@
         <button @click="fetchEventos(true)" class="update-button">Actualizar</button>
       </div>
       <div class="content">
-        <ul v-if="eventos.length > 0">
-          <li v-for="(partido, index) in eventos" :key="index">
-            <router-link 
-              :to="{ name: 'DetalleEvento', params: { id: partido.idEvent } }"
-              class="evento-link"
-            >
-              {{ partido.dateEvent }}: {{ partido.strHomeTeam }} vs {{ partido.strAwayTeam }}
-            </router-link>
-          </li>
-        </ul>
-        <p v-else>Cargando partidos...</p>
+        <div class="column">
+          <div class="league-header">
+            <img src="/assets/images/espana.png" alt="La Liga Española" class="league-logo" />
+            <p class="league-title">La Liga Española</p>
+          </div>
+          <ul v-if="eventosLigaEspanola.length > 0">
+            <li v-for="(partido, index) in eventosLigaEspanola" :key="index" class="evento-item">
+              <router-link 
+                :to="{ name: 'DetalleEvento', params: { id: partido.idEvent } }"
+                class="evento-link"
+              >
+                <div class="evento-details">
+                  <span class="evento-equipos">{{ partido.strHomeTeam }} vs {{ partido.strAwayTeam }}</span>
+                  <span class="evento-fecha">{{ partido.dateEvent }}</span>
+                </div>
+              </router-link>
+            </li>
+          </ul>
+          <p v-else>Cargando partidos...</p>
+        </div>
+        <div class="column">
+          <div class="league-header">
+            <img src="/assets/images/brazil.png" alt="Liga Brasileña" class="league-logo" />
+            <p class="league-title">Liga Brasileña</p>
+          </div>
+          <ul v-if="eventosLigaBrasileña.length > 0">
+            <li v-for="(partido, index) in eventosLigaBrasileña" :key="index" class="evento-item">
+              <router-link 
+                :to="{ name: 'DetalleEvento', params: { id: partido.idEvent } }"
+                class="evento-link"
+              >
+                <div class="evento-details">
+                  <span class="evento-equipos">{{ partido.strHomeTeam }} vs {{ partido.strAwayTeam }}</span>
+                  <span class="evento-fecha">{{ partido.dateEvent }}</span>
+                </div>
+              </router-link>
+            </li>
+          </ul>
+          <p v-else>Cargando partidos...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -39,6 +68,8 @@ export default defineComponent({
   name: "Partidos",
   setup() {
     const eventos = ref<any[]>([]);
+    const eventosLigaEspanola = ref<any[]>([]);
+    const eventosLigaBrasileña = ref<any[]>([]);
 
     const fetchEventos = async (forceUpdate = false) => {
       try {
@@ -47,6 +78,7 @@ export default defineComponent({
           if (cachedEventos) {
             console.log("Usando eventos de localStorage");
             eventos.value = JSON.parse(cachedEventos);
+            dividirEventosPorLiga();
             return;
           }
         }
@@ -57,47 +89,27 @@ export default defineComponent({
 
         // Guardar en localStorage
         localStorage.setItem("eventos", JSON.stringify(response.data));
+        dividirEventosPorLiga();
       } catch (error) {
         console.error("Error al obtener eventos:", error);
       }
+    };
+
+    const dividirEventosPorLiga = () => {
+      eventosLigaEspanola.value = eventos.value.filter((event) => event.idLeague === "4335");
+      eventosLigaBrasileña.value = eventos.value.filter((event) => event.idLeague === "4351");
     };
 
     onMounted(() => {
       fetchEventos();
     });
 
-    return { eventos, fetchEventos };
+    return { eventos, eventosLigaEspanola, eventosLigaBrasileña, fetchEventos };
   },
 });
 </script>
 
 <style scoped>
-/* Nuevo botón */
-.update-button {
-  background: linear-gradient(to right, #08b0df, #222291);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-left: 10px;
-}
-
-.update-button:hover {
-  background: linear-gradient(to right, #222291, #08b0df);
-}
-
-.evento-link {
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-}
-
-.evento-link:hover {
-  text-decoration: underline;
-}
-
 .partidos-container {
   display: flex;
   height: 100%;
@@ -134,38 +146,80 @@ export default defineComponent({
 }
 
 .content {
-  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 2rem; /* Espaciado entre columnas */
   padding: 20px;
   background: #f4f4f4;
-  overflow-y: auto;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
+.column {
+  width: 45%; /* Ajusta el ancho para centrar mejor */
 }
 
-li {
+.league-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.league-logo {
+  width: 100px; /* Ajusta el tamaño del logo */
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.league-title {
+  font-size: 18px;
+  color: #222291;
+  font-weight: bold;
+}
+
+.evento-item {
   padding: 10px;
   margin: 10px 0;
   background: rgba(0, 0, 0, 0.05);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-router-link {
-  color: blue;
+.evento-link {
   text-decoration: none;
+  color: black;
+  font-weight: bold;
+  width: 100%;
 }
 
-router-link:hover {
-  text-decoration: underline;
+.evento-details {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
-h2 {
-  color: blue;
-  font-size: 24px;
-  margin-bottom: 20px;
+.evento-equipos {
   text-align: center;
+  flex: 2;
+}
+
+.evento-fecha {
+  text-align: right;
+  flex: 1;
+}
+
+.update-button {
+  background: linear-gradient(to right, #08b0df, #222291);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.update-button:hover {
+  background: linear-gradient(to right, #222291, #08b0df);
 }
 </style>
