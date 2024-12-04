@@ -25,7 +25,7 @@ const router = createRouter({
 });
 
 // Middleware de navegación
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const token = localStorage.getItem("access_token");
 

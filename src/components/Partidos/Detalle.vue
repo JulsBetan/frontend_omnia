@@ -68,12 +68,32 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
+
+interface Clima {
+  temperature: string;
+  wind_speed: string;
+  description: string;
+}
+
+interface Evento {
+  idEvent: string;
+  strHomeTeamBadge: string;
+  strAwayTeamBadge: string;
+  dateEvent: string;
+  strTime: string;
+  strHomeTeam: string;
+  strAwayTeam: string;
+  strVenue: string;
+  clima: Clima;
+  pronostico: string;
+}
+
 export default defineComponent({
   name: "Detalle",
   setup() {
     const router = useRouter();
     const route = useRoute();
-    const evento = ref(null);
+    const evento = ref<Evento | null>(null);
 
     onMounted(() => {
       const storedEvents = JSON.parse(localStorage.getItem("eventos") || "[]");
