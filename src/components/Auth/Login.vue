@@ -8,7 +8,7 @@
           </div>
           <form @submit.prevent="handleLogin">
             <div class="modal-body">
-                <h3 class="mb-4 title">Tus pronosticos de partidos <br>
+                <h3 class="mb-4 title">Tus pronósticos de partidos <br>
                   de acuerdo al clima</h3>
               <div class="form-group">
                 <input
@@ -30,8 +30,6 @@
                 />
                 <label class="form-control-placeholder" for="password">Password</label>
               </div>
-              <label class="tc">
-                By signing up I accept the <strong>Terms & Conditions</strong> </label>
             </div>
             <div class="modal-footer border-0 text-center">
               <button
@@ -39,7 +37,7 @@
                 class="btn signin btn-block"
                 :disabled="!formValid"
               >
-                Sing In
+                Sign In
               </button>
               <p class="register-link">
                 ¿No tienes una cuenta? <a @click="redirectToSignup">Registrarse</a>

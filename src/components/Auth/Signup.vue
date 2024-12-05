@@ -8,7 +8,7 @@
           </div>
           <form @submit.prevent="handleSignup">
             <div class="modal-body">
-              <h3 class="mb-4 title">Crear una nueva cuenta</h3>
+              <h3 class="mb-4 title">Crear nueva cuenta</h3>
               <div class="form-group">
                 <input
                   type="text"
@@ -36,7 +36,7 @@
                 class="btn signin btn-block"
                 :disabled="!formValid"
               >
-                Sing Up
+                Sign Up
               </button>
               <p class="register-link">
                 ¿Ya tienes una cuenta? <a @click="redirectToLogin">Regresar</a>
