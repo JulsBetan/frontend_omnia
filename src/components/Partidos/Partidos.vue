@@ -27,7 +27,7 @@
               </router-link>
             </li>
           </ul>
-          <p v-else>Cargando partidos...</p>
+          <p v-else class="no-partidos-msg">No hay partidos programados.</p>
         </div>
         <div class="column">
           <div class="league-header">
@@ -47,7 +47,7 @@
               </router-link>
             </li>
           </ul>
-          <p v-else>Cargando partidos...</p>
+          <p v-else class="no-partidos-msg">No hay partidos programados.</p>
         </div>
       </div>
     </div>
@@ -110,6 +110,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.no-partidos-msg {
+  color: #ff0000; /* Cambia esto al color que desees */
+  font-weight: bold; /* Opcional: para que el texto sea más destacado */
+  text-align: center; /* Opcional: centra el texto */
+}
+
 .partidos-container {
   display: flex;
   height: 100%;
