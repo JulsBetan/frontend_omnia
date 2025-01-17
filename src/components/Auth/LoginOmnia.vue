@@ -29,6 +29,9 @@
                 <input id="password" type="password" v-model="password" placeholder="Contraseña" class="form-control">
               </div>
               <button type="submit" class="login-button">Ingresar</button>
+              <div class="social-login">
+                  <button @click.prevent="loginWithSupabase" class="supabase-login">Sign In</button>
+              </div>
               <div class="login-footer">
                 <a @click.prevent="redirectToSignup" class="link">¿No tienes cuenta? <span>Crear una cuenta</span></a>
                 <a @click.prevent="recoverPassword" class="link">¿Olvidaste tu contraseña? <span>Recuperar contraseña</span></a>
@@ -50,6 +53,7 @@ import { defineComponent, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { supabase } from '@/supabase/client';
 
 const URL_DEPORTES = import.meta.env.VITE_API_DEPORTES_URL;
 
@@ -67,6 +71,8 @@ export default defineComponent({
     const formValid = computed(() => email.value.trim() !== "" && password.value.trim() !== "");
 
     const handleLogin = async () => {
+
+      console.log("Boton Ingresar poresionado. Email:", email.value);
       // Implementación de login
       try {
         const response = await axios.post(`${URL_DEPORTES}/users/login`, {
@@ -101,6 +107,36 @@ export default defineComponent({
       }
     };
 
+    const loginWithSupabase = async () => {
+      console.log("Boton Sign In poresionado. Email:", email.value);
+      // Implementación de Magic Link con Supabase
+      if (!email.value) {
+        Swal.fire({ icon: "warning", title: "Email requerido", text: "Ingresa tu correo electrónico." });
+        return;
+      }
+
+      try {
+          const { error } = await supabase.auth.signInWithOtp({ email: email.value });
+
+          if (error) {
+            Swal.fire({ icon: "error", title: "Error", text: error.message });
+          } else {
+            Swal.fire({ icon: "success", title: "Revisa tu correo", text: "Te hemos enviado un enlace para iniciar sesión." });
+          }
+      } catch (error: any) {
+
+        console.error("Error inesperado:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.response?.data?.detail || "Credenciales incorrectas. Intenta de nuevo." || error,
+          confirmButtonText: "OK",
+        });
+
+      }
+    
+    };
+
     const loginWithGoogle = () => {
       // Implementación de login con Google
     };
@@ -117,7 +153,7 @@ export default defineComponent({
       // Implementación para recuperar contraseña
     };
 
-    return { email, password, formValid, handleLogin, loginWithGoogle, loginWithMicrosoft, redirectToSignup, recoverPassword };
+    return { email, password, formValid, handleLogin, loginWithSupabase, loginWithGoogle, loginWithMicrosoft, redirectToSignup, recoverPassword };
   },
 });
 </script>
@@ -263,6 +299,15 @@ label {
   border: none;
   cursor: pointer;
   font-weight: bold;
+}
+
+.supabase-login {
+  background-color: #834f99;
+  color: white;
+}
+
+.supabase-login:hover {
+  background-color: #594198;
 }
 
 .google-login {
