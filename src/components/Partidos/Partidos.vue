@@ -7,6 +7,7 @@
       <div class="top-bar">
         Próximos Partidos
         <button @click="fetchEventos(true)" class="update-button">Actualizar</button>
+        <button @click="handleLogout" class="logout-button">Cerrar Sesión</button>
       </div>
       <div class="content">
         <div class="column">
@@ -34,8 +35,8 @@
             <img src="/assets/images/brazil.png" alt="Liga Brasileña" class="league-logo" />
             <p class="league-title">Liga Brasileña</p>
           </div>
-          <ul v-if="eventosLigaBrasileña.length > 0">
-            <li v-for="(partido, index) in eventosLigaBrasileña" :key="index" class="evento-item">
+          <ul v-if="eventosLigaBrasilena.length > 0">
+            <li v-for="(partido, index) in eventosLigaBrasilena" :key="index" class="evento-item">
               <router-link 
                 :to="{ name: 'DetalleEvento', params: { id: partido.idEvent } }"
                 class="evento-link"
@@ -56,7 +57,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
+import { supabase } from "@/supabase/client"; 
 
 const URL_DEPORTES = import.meta.env.VITE_API_DEPORTES_URL;
 
@@ -67,9 +70,10 @@ if (!URL_DEPORTES) {
 export default defineComponent({
   name: "Partidos",
   setup() {
+    const  router = useRouter();
     const eventos = ref<any[]>([]);
     const eventosLigaEspanola = ref<any[]>([]);
-    const eventosLigaBrasileña = ref<any[]>([]);
+    const eventosLigaBrasilena = ref<any[]>([]);
 
     const fetchEventos = async (forceUpdate = false) => {
       try {
@@ -97,14 +101,23 @@ export default defineComponent({
 
     const dividirEventosPorLiga = () => {
       eventosLigaEspanola.value = eventos.value.filter((event) => event.idLeague === "4335");
-      eventosLigaBrasileña.value = eventos.value.filter((event) => event.idLeague === "4351");
+      eventosLigaBrasilena.value = eventos.value.filter((event) => event.idLeague === "4351");
+    };
+
+    const handleLogout = async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error al cerrar sesión:", error);
+      } else {
+        router.push("/login"); // Asegúrate de que el nombre de la ruta sea correcto
+      }
     };
 
     onMounted(() => {
       fetchEventos();
     });
 
-    return { eventos, eventosLigaEspanola, eventosLigaBrasileña, fetchEventos };
+    return { eventos, eventosLigaEspanola, eventosLigaBrasilena, fetchEventos, handleLogout };
   },
 });
 </script>
@@ -227,5 +240,20 @@ export default defineComponent({
 
 .update-button:hover {
   background: linear-gradient(to right, #222291, #08b0df);
+}
+
+.logout-button {
+  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.logout-button:hover {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
 }
 </style>

@@ -137,8 +137,22 @@ export default defineComponent({
     
     };
 
-    const loginWithGoogle = () => {
+    const loginWithGoogle = async () => {
       // Implementación de login con Google
+      console.log("Intentando iniciar sesión con Google...");
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: "http://localhost:5173/partidos", // URL a la que redirigir tras el login
+          queryParams: { prompt: "select_account"}
+        },
+      });
+
+      if (error) {
+        console.error("Error en autenticación con Google:", error);
+        Swal.fire({ icon: "error", title: "Error", text: error.message });
+      }
     };
 
     const loginWithMicrosoft = () => {
