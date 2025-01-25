@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "../components/Auth/LoginOmnia.vue";
-import Signup from "../components/Auth/Signup.vue";
+import Signup from "../components/Auth/SignupOmnia.vue";
 import Partidos from "../components/Partidos/Partidos.vue";
 import Detalle from "../components/Partidos/Detalle.vue";
 import axios from "axios";
