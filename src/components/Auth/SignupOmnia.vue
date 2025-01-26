@@ -91,6 +91,13 @@ export default defineComponent({
         email: email.value,
         options: {
           emailRedirectTo: "http://localhost:5173/login", // Redirige tras confirmación
+          data: {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            middleName: middleName.value,
+            countryCode: countryCode.value,
+            phoneNumber: phoneNumber.value,
+          },
         },
       });
 
@@ -103,20 +110,7 @@ export default defineComponent({
           text: "Revisa tu correo para confirmar tu cuenta.",
         });
 
-        // Esperar a que el usuario inicie sesión y agregar los datos adicionales
-        supabase.auth.onAuthStateChange(async (event, session) => {
-          if (event === "SIGNED_IN" && session?.user) {
-            await supabase.from("profiles").upsert({
-              id: session.user.id,
-              firstName: firstName.value,
-              lastName: lastName.value,
-              middleName: middleName.value,
-              countryCode: countryCode.value,
-              phoneNumber: phoneNumber.value,
-            });
-            router.push("/login");
-          }
-        });
+        router.push("/login");
       }
     }; 
     return { firstName, lastName, middleName, countryCode, phoneNumber, email, acceptTerms, acceptPrivacy, handleSignup };
