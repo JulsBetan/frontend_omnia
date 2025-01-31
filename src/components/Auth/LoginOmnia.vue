@@ -19,22 +19,17 @@
 
         <div class="container">
 
-            <form @submit.prevent="handleLogin" class="login-form">
+            <form @submit.prevent="loginWithSupabase" class="login-form">
               <div class="form-group">
-                <label for="email">Usuario:</label>
-                <input id="email" type="text" v-model="email" placeholder="Escribe el usuario o correo electrónico" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input id="password" type="password" v-model="password" placeholder="Contraseña" class="form-control">
+                <label for="email">E-mail:</label>
+                <input id="email" type="text" v-model="email" placeholder="Indica tu dirección de email" class="form-control">
               </div>
               <button type="submit" class="login-button">Ingresar</button>
-              <div class="social-login">
-                  <button @click.prevent="loginWithSupabase" class="supabase-login">Sign In</button>
-              </div>
               <div class="login-footer">
                 <a @click.prevent="redirectToSignup" class="link">¿No tienes cuenta? <span>Crear una cuenta</span></a>
-                <a @click.prevent="recoverPassword" class="link">¿Olvidaste tu contraseña? <span>Recuperar contraseña</span></a>
+              </div>
+              <div class="alternative-login">
+                <span>o usar una de estas opciones</span>
               </div>
               <div class="social-login">
                 <button @click.prevent="loginWithGoogle" class="google-login">Continuar con Google</button>

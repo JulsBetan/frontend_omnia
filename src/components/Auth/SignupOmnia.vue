@@ -53,7 +53,10 @@
               <input type="checkbox" id="privacy" v-model="acceptPrivacy" required>
               <label for="privacy"> Acepto la <a href="/privacidad" target="_blank">Política de Privacidad</a></label>
             </div>
-            <button type="submit" class="login-button">Registrar</button>
+            <div class="button-group">
+              <button type="button" class="cancel-button" @click="handleCancel">Cancelar</button>
+              <button type="submit" class="signup-button">Registrar</button>
+            </div>
           </form>
         </div>
       </div>
@@ -113,7 +116,12 @@ export default defineComponent({
         router.push("/login");
       }
     }; 
-    return { firstName, lastName, middleName, countryCode, phoneNumber, email, acceptTerms, acceptPrivacy, handleSignup };
+
+    const handleCancel = () => {
+      router.push("/login");
+    };   
+
+    return { firstName, lastName, middleName, countryCode, phoneNumber, email, acceptTerms, acceptPrivacy, handleSignup, handleCancel };
 
   },
 });

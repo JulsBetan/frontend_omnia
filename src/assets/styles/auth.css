@@ -116,6 +116,22 @@ label {
   border-color: #6200EE;
 }
 
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.signup-button, .cancel-button {
+  width: 48%;
+  background-color: #834f99;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
 .login-button {
   width: 100%;
   background-color: #834f99;
@@ -127,7 +143,7 @@ label {
   cursor: pointer;
 }
 
-.login-button:hover {
+.login-button:hover, .cancel-button:hover {
   background-color: #594198;
 }
 
@@ -212,3 +228,33 @@ label {
   margin-left: 5px;
 }
 
+/* Linea para login alternativo LINEA*/
+.alternative-login {
+  text-align: center;
+  margin: 20px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.alternative-login span {
+  display: inline-block;
+  position: relative;
+}
+
+.alternative-login span::before,
+.alternative-login span::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: #ccc;
+}
+
+.alternative-login span::before {
+  left: -45%;
+}
+
+.alternative-login span::after {
+  right: -45%;
+}
