@@ -32,8 +32,13 @@
                 <span>o usar una de estas opciones</span>
               </div>
               <div class="social-login">
-                <button @click.prevent="loginWithGoogle" class="google-login">Continuar con Google</button>
-                <button @click.prevent="loginWithMicrosoft" class="microsoft-login">Continuar con Microsoft</button>
+                <button @click.prevent="loginWithGoogle" class="google-login">
+                  <img src="/assets/images/google.png" alt="Google Logo" class="social-logo" />
+                  Continuar con Google
+                </button>
+                <button @click.prevent="loginWithMicrosoft" class="microsoft-login">
+                    <img src="/assets/images/office.png" alt="Microsoft Logo" class="social-logo" />
+                    Continuar con Microsoft</button>
               </div>
             </form>
         </div>
@@ -87,9 +92,9 @@ export default defineComponent({
           // Guardar el token de acceso en el localStorage o sesión
           localStorage.setItem("access_token", response.data.access_token);
 
-          // Redirigir a la página de partidos
+          // Redirigir a la página de inicio 
           setTimeout(() => {
-            router.push("/partidos");
+            router.push("/inicio");
           }, 2000);
         }
       } catch (error: any) {
@@ -111,7 +116,12 @@ export default defineComponent({
       }
 
       try {
-          const { error } = await supabase.auth.signInWithOtp({ email: email.value });
+          const { error } = await supabase.auth.signInWithOtp({ 
+            email: email.value,
+            options: {
+              shouldCreateUser: false, // Evita crear un nuevo usuario si no existe
+            },
+          });
 
           if (error) {
             Swal.fire({ icon: "error", title: "Error", text: error.message });
@@ -139,7 +149,7 @@ export default defineComponent({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "http://localhost:5173/partidos", // URL a la que redirigir tras el login
+          redirectTo: "http://localhost:5173/inicio", // URL a la que redirigir tras el login
           queryParams: { prompt: "select_account"}
         },
       });
