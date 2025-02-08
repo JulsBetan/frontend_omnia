@@ -1,12 +1,14 @@
 <template>
   <div class="inicio-container">
+
+
     <!-- Header -->
     <header class="header">
       <div class="logo-container">
         <img src="/assets/images/omniapro_horz_white_logo_no_background.png" alt="Omnia Pro Logo" class="logo">
       </div>
       <div class="user-actions">
-        <p v-if="user">{{ user.user_metadata.name }}</p>
+        <p v-if="user">{{ user.user_metadata?.name || user.user_metadata?.full_name || user.email  }}</p>
         <button @click="cerrarSesion">Cerrar sesión</button>
       </div>
     </header>
@@ -16,7 +18,37 @@
         <input type="text" placeholder="Search" />
       </div>
     </header>
+    <!-- Menu izquierdo -->
+    <aside class="menu-vertical">
+      <ul>
+        <li>
+          <img src="/assets/images/icons/pieIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
+          <span class="menu-text">Dashboard</span> <!-- Texto del menú -->
 
+          
+
+        </li>
+        <li @mouseenter="mostrarSubmenu('administracion')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/projectIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
+          <span class="menu-text">Administración</span>
+
+          <!-- Submenú para "Administracion" -->
+          <ul v-if="submenuVisible === 'administracion'" class="submenu">
+            <li>Empresas</li>
+            <li>Unidades organizacionales</li>
+            <li>Reglas fonde de ahorro</li>
+          </ul>
+        </li>
+        <li>
+          <img src="/assets/images/icons/personaIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
+          <span class="menu-text">Participantes</span>
+        </li>
+        <li>
+          <span>⚙️</span> <!-- Ícono de ajustes -->
+          <span class="menu-text">Ajustes</span>
+        </li>
+      </ul>
+    </aside> 
     <!-- Contenido Principal -->
     <main class="main-content">
       <div class="progress-indicator">
@@ -43,6 +75,17 @@ const userStore = useUserStore();
 const router = useRouter();
 
 const user = ref(null);
+const submenuVisible = ref(null); // Controla qué submenú está visible
+
+// Mostrar el submenú correspondiente
+const mostrarSubmenu = (menu) => {
+  submenuVisible.value = menu;
+};
+
+// Ocultar el submenú
+const ocultarSubmenu = () => {
+  submenuVisible.value = null;
+};
 
 onMounted(async () => {
   try {
@@ -89,7 +132,7 @@ const cerrarSesion = async () => {
   justify-content: space-between;
   align-items: center;
   padding: 0px;
-  background-color: #000000;
+  background-color: #1a1026;
   border-bottom: 0px solid #ddd;
   padding: 10px 10px;
 }
@@ -159,4 +202,75 @@ const cerrarSesion = async () => {
   max-width: 15%;
   height: auto;
 }
+
+.menu-vertical {
+  width: 40px; /* Ancho del menú */
+  background-color: #1a1026; /* Color de fondo del menú */
+  color: white; /* Color del texto */
+  padding: 20px;
+  border-radius: 15px; /* Esquinas redondeadas */
+  margin: 10px; /* Margen para separar el menú del borde */
+  transition: width 0.3s ease;
+}
+
+.menu-vertical:hover {
+  width: 250px; /* Ancho expandido del menú (íconos + texto) */
+}
+
+.menu-vertical ul {
+  list-style: none; /* Quita los puntos de la lista */
+  padding: 0;
+  margin: 0;
+}
+
+.menu-vertical li {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre el ícono y el texto */
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative; 
+}
+
+.menu-vertical li:hover {
+  background-color: #34495e; /* Color de fondo al pasar el mouse */
+}
+
+.menu-text {
+  opacity: 0; /* Oculta el texto por defecto */
+  transition: opacity 0.3s ease; /* Transición suave para la opacidad */
+}
+
+.menu-vertical:hover .menu-text {
+  opacity: 1; /* Muestra el texto al pasar el mouse */
+}
+
+.menu-icon {
+  width: 20px; /* Ajusta el tamaño del ícono */
+  height: 20px; /* Ajusta el tamaño del ícono */
+}
+
+.submenu {
+  position: absolute;
+  left: 100%; /* Posiciona el submenú a la derecha del menú principal */
+  top: 0;
+  width: 200px; /* Ancho del submenú */
+  background-color: #1a1026; /* Color de fondo del submenú */
+  border-radius: 8px; /* Esquinas redondeadas */
+  padding: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para el submenú */
+  z-index: 10;
+}
+
+.submenu li {
+  padding: 8px;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.submenu li:hover {
+  background-color: #2c3e50; /* Color de fondo al pasar el mouse */
+}
+
 </style>
