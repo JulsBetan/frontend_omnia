@@ -7,15 +7,30 @@
       <div class="logo-container">
         <img src="/assets/images/omniapro_horz_white_logo_no_background.png" alt="Omnia Pro Logo" class="logo">
       </div>
-      <div class="user-actions">
-        <p v-if="user">{{ user.user_metadata?.name || user.user_metadata?.full_name || user.email  }}</p>
-        <button @click="cerrarSesion">Cerrar sesión</button>
+      <div class="header-right">
+          <div class="bell-container">
+            <img src="/assets/images/icons/bell@3x.png" alt="bell Logo" class="bell-icon">
+          </div>
+          <div class="user-container">
+            <img src="/assets/images/icons/user@3x.png" alt="user" class="user-icon">
+            <p v-if="user">{{ user.user_metadata?.name || user.user_metadata?.full_name || user.email  }}</p>
+          </div>
+          <div class="close-sesion-container">
+            <img src="/assets/images/icons/exit@3x.png" alt="exit" class="exit-icon">
+            <button @click="cerrarSesion">Cerrar sesión</button>
+          </div>
       </div>
     </header>
 
     <header class="header2">
+      <div class="mh1-container">
+        <img src="/assets/images/icons/MH1@3x.png" alt="MH1" class="mh1-icon">
+      </div>
       <div class="search-bar">
         <input type="text" placeholder="Search" />
+      </div>
+      <div class="busqueda-container">
+        <img src="/assets/images/icons/icnBusqueda@3x.png" alt="busqueda" class="busqueda-icon">
       </div>
     </header>
     <!-- Menu izquierdo -->
@@ -24,9 +39,6 @@
         <li>
           <img src="/assets/images/icons/pieIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
           <span class="menu-text">Dashboard</span> <!-- Texto del menú -->
-
-          
-
         </li>
         <li @mouseenter="mostrarSubmenu('administracion')" @mouseleave="ocultarSubmenu">
           <img src="/assets/images/icons/projectIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
@@ -114,57 +126,107 @@ const cerrarSesion = async () => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 20px;
+  padding: 0px;
   background-color: #f5f5f5;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px;
   background-color: #834f99;
   border-bottom: 0px solid #ddd;
+  width: 100%;
+  overflow: hidden;
+}
+
+.bell-icon {
+  width: 30px; /* Ajusta el tamaño del ícono */
+  height: 30px; /* Ajusta el tamaño del ícono */
+}
+
+.user-icon {
+  width: 30px; /* Ajusta el tamaño del ícono */
+  height: 30px; /* Ajusta el tamaño del ícono */
+}
+
+.exit-icon {
+  width: 30px; /* Ajusta el tamaño del ícono */
+  height: 30px; /* Ajusta el tamaño del ícono */
 }
 
 .header2 {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0px;
   background-color: #1a1026;
   border-bottom: 0px solid #ddd;
-  padding: 10px 10px;
+  padding: 10px 0px;
+  font-size: 0;
 }
+
+.mh1-container {
+  margin-left: 20px;
+}
+
+.mh1-icon {
+  width: 30px; /* Ajusta el tamaño del ícono */
+  height: 30px; /* Ajusta el tamaño del ícono */
+}
+
 .app-name {
   font-size: 24px;
   font-weight: bold;
+}
+
+.search-bar {
+  margin-left: 20px;
 }
 
 .search-bar input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 200px;
+  width: 300px;
   background-color: #333333;
+  /*text-align: left;*/
 }
 
-.user-actions {
+.busqueda-container {
+  margin-left: 10px;
+}
+
+.busqueda-icon {
+  width: 30px; /* Ajusta el tamaño del ícono */
+  height: 30px; /* Ajusta el tamaño del ícono */
+}
+
+.user-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.user-container p {
+  white-space: nowrap; /* Evita que el texto salte a una nueva línea */
+}
+
+.close-sesion-container {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.user-actions button {
+.close-sesion-container button {
   padding: 8px 12px;
   background-color: #834f99;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-.user-actions button:hover {
+.close-sesion-container button:hover {
   background-color: #594198;
 }
 
@@ -194,27 +256,38 @@ const cerrarSesion = async () => {
 }
 
 .logo-container {
-  text-align: left;
+  display: flex;
+  justify-content: flex-start; /* Alinea el logo a la izquierda */
+  align-items: center; /* Centra verticalmente el logo */
   margin-left: 20px;
+  max-width: 30%;
+  height: 100%;
 }
 
 .logo {
-  max-width: 15%;
+  max-width: 50%;
   height: auto;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 80px; /* Espacio entre los elementos de la derecha */
+  margin-left: auto; /* Empuja los elementos hacia la derecha */
+}
+
 .menu-vertical {
-  width: 40px; /* Ancho del menú */
+  width: 50px; /* Ancho del menú */
   background-color: #1a1026; /* Color de fondo del menú */
   color: white; /* Color del texto */
-  padding: 20px;
+  padding: 0px;
   border-radius: 15px; /* Esquinas redondeadas */
   margin: 10px; /* Margen para separar el menú del borde */
   transition: width 0.3s ease;
 }
 
 .menu-vertical:hover {
-  width: 250px; /* Ancho expandido del menú (íconos + texto) */
+  width: 200px; /* Ancho expandido del menú (íconos + texto) */
 }
 
 .menu-vertical ul {
@@ -226,8 +299,8 @@ const cerrarSesion = async () => {
 .menu-vertical li {
   display: flex;
   align-items: center;
-  gap: 10px; /* Espacio entre el ícono y el texto */
-  padding: 10px;
+  gap: 24px; /* Espacio entre el ícono y el texto */
+  padding: 5px 17px; /* Espacio vertical entre los iconos y espacio horizontal */
   cursor: pointer;
   transition: background-color 0.3s;
   position: relative; 
@@ -247,8 +320,8 @@ const cerrarSesion = async () => {
 }
 
 .menu-icon {
-  width: 20px; /* Ajusta el tamaño del ícono */
-  height: 20px; /* Ajusta el tamaño del ícono */
+  width: 15px; /* Ajusta el tamaño del ícono */
+  height: 15px; /* Ajusta el tamaño del ícono */
 }
 
 .submenu {
