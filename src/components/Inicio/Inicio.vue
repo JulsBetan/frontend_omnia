@@ -23,8 +23,8 @@
     </header>
 
     <header class="header2">
-      <div class="mh1-container">
-        <img src="/assets/images/icons/MH1@3x.png" alt="MH1" class="mh1-icon">
+      <div class="mh1-container" @click="toggleMenu">
+          <img src="/assets/images/icons/MH1@3x.png" alt="MH1" class="mh1-icon" :class="{ 'active': isMenuExpanded }">
       </div>
       <div class="search-bar">
         <input type="text" placeholder="Search" />
@@ -34,14 +34,14 @@
       </div>
     </header>
     <!-- Menu izquierdo -->
-    <aside class="menu-vertical">
-      <ul>
+    <aside class="menu-vertical" :class="{ 'expanded': isMenuExpanded }">
+      <ul class="menu-list">
         <li>
-          <img src="/assets/images/icons/pieIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
+          <img src="/assets/images/icons/pieIconW@3x.png" alt="Dashboard" class="menu-icon" >
           <span class="menu-text">Dashboard</span> <!-- Texto del menú -->
         </li>
         <li @mouseenter="mostrarSubmenu('administracion')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/projectIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
+          <img src="/assets/images/icons/projectIconW@3x.png" alt="Administracion" class="menu-icon" >
           <span class="menu-text">Administración</span>
 
           <!-- Submenú para "Administracion" -->
@@ -52,12 +52,71 @@
           </ul>
         </li>
         <li>
-          <img src="/assets/images/icons/personaIconW@3x.png" alt="Ícono de casa" class="menu-icon" >
+          <img src="/assets/images/icons/personaIconW@3x.png" alt="Participantes" class="menu-icon" >
           <span class="menu-text">Participantes</span>
         </li>
-        <li>
-          <span>⚙️</span> <!-- Ícono de ajustes -->
-          <span class="menu-text">Ajustes</span>
+        <li @mouseenter="mostrarSubmenu('operaciones')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/opsIconW@3x.png" alt="Operaciones" class="menu-icon" >
+          <span class="menu-text">Operaciones</span>
+          <!-- Submenú para "Operaciones" -->
+          <ul v-if="submenuVisible === 'operaciones'" class="submenu">
+            <li>Aportaciones</li>
+            <li>Retiros</li>
+          </ul>
+        </li>
+        <li @mouseenter="mostrarSubmenu('aportaciones')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/aportacionesIconW@3x.png" alt="Aportaciones" class="menu-icon" >
+          <span class="menu-text">Aportaciones</span>
+          <!-- Submenú para "Aportaciones" -->
+          <ul v-if="submenuVisible === 'aportaciones'" class="submenu">
+            <li>Item1</li>
+            <li>Item2</li>
+          </ul>
+        </li>
+        <li @mouseenter="mostrarSubmenu('retiros')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/retirosIconW@3x.png" alt="Retiros" class="menu-icon" >
+          <span class="menu-text">Retiros</span>
+          <!-- Submenú para "Aportaciones" -->
+          <ul v-if="submenuVisible === 'retiros'" class="submenu">
+            <li>Item1</li>
+            <li>Item2</li>
+          </ul>
+        </li>
+        <li @mouseenter="mostrarSubmenu('prestamos')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/loansIconW@3x.png" alt="Prestamos" class="menu-icon" >
+          <span class="menu-text">Préstamos</span>
+          <!-- Submenú para "Prestamos" -->
+          <ul v-if="submenuVisible === 'prestamos'" class="submenu">
+            <li>Item1</li>
+            <li>Item2</li>
+          </ul>
+        </li>
+        <li @mouseenter="mostrarSubmenu('documentos')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/docsIconW@3x.png" alt="Documentos" class="menu-icon" >
+          <span class="menu-text">Documentos</span>
+          <!-- Submenú para "Documentos" -->
+          <ul v-if="submenuVisible === 'documentos'" class="submenu">
+            <li>Item1</li>
+            <li>Item2</li>
+          </ul>
+        </li>
+        <li @mouseenter="mostrarSubmenu('comunicados')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/comsIconW@3x.png" alt="Comunicados" class="menu-icon" >
+          <span class="menu-text">Comunicados</span>
+          <!-- Submenú para "Comunicados" -->
+          <ul v-if="submenuVisible === 'comunicados'" class="submenu">
+            <li>Item1</li>
+            <li>Item2</li>
+          </ul>
+        </li>
+        <li @mouseenter="mostrarSubmenu('ayuda')" @mouseleave="ocultarSubmenu">
+          <img src="/assets/images/icons/ayudaIconW@3x.png" alt="Ayuda" class="menu-icon" >
+          <span class="menu-text">Ayuda</span>
+          <!-- Submenú para "Ayuda" -->
+          <ul v-if="submenuVisible === 'ayuda'" class="submenu">
+            <li>Item1</li>
+            <li>Item2</li>
+          </ul>
         </li>
       </ul>
     </aside> 
@@ -88,6 +147,14 @@ const router = useRouter();
 
 const user = ref(null);
 const submenuVisible = ref(null); // Controla qué submenú está visible
+
+// Estado para controlar si el menú está expandido
+const isMenuExpanded = ref(false);
+
+// Función para alternar el estado del menú
+const toggleMenu = () => {
+  isMenuExpanded.value = !isMenuExpanded.value;
+};
 
 // Mostrar el submenú correspondiente
 const mostrarSubmenu = (menu) => {
@@ -137,6 +204,7 @@ const cerrarSesion = async () => {
   border-bottom: 0px solid #ddd;
   width: 100%;
   overflow: hidden;
+  padding: 20px 0px;
 }
 
 .bell-icon {
@@ -201,10 +269,9 @@ const cerrarSesion = async () => {
 
 .user-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  gap: 10px;
 }
 .user-container p {
   white-space: nowrap; /* Evita que el texto salte a una nueva línea */
@@ -259,7 +326,7 @@ const cerrarSesion = async () => {
   display: flex;
   justify-content: flex-start; /* Alinea el logo a la izquierda */
   align-items: center; /* Centra verticalmente el logo */
-  margin-left: 20px;
+  margin-left: 35px;
   max-width: 30%;
   height: 100%;
 }
@@ -271,9 +338,11 @@ const cerrarSesion = async () => {
 
 .header-right {
   display: flex;
+  justify-content: flex-start; /* Alinea el logo a la izquierda */
   align-items: center;
   gap: 80px; /* Espacio entre los elementos de la derecha */
   margin-left: auto; /* Empuja los elementos hacia la derecha */
+  padding: 0px 10px;
 }
 
 .menu-vertical {
@@ -282,8 +351,20 @@ const cerrarSesion = async () => {
   color: white; /* Color del texto */
   padding: 0px;
   border-radius: 15px; /* Esquinas redondeadas */
-  margin: 10px; /* Margen para separar el menú del borde */
+  margin: 5px 0px 0px 10px; /* Margen para separar el menú del borde */
   transition: width 0.3s ease;
+  height: 100%; /* Ocupa toda la altura disponible */
+}
+
+.menu-list {
+  margin-top: 0px; /* Espacio en la parte superior de la lista */
+  list-style: none; /* Quita los puntos de la lista */
+  padding-left: 0; /* Elimina el padding izquierdo por defecto */
+  margin: 0; /* Elimina el margen por defecto */
+}
+
+.menu-list li:first-child {
+  margin-top: 10px; /* Espacio solo para el primer ícono */
 }
 
 .menu-vertical:hover {
@@ -307,7 +388,15 @@ const cerrarSesion = async () => {
 }
 
 .menu-vertical li:hover {
-  background-color: #34495e; /* Color de fondo al pasar el mouse */
+  background-color: transparent; /* Color de fondo al pasar el mouse */
+}
+
+.menu-vertical li:hover .menu-icon {
+  filter: brightness(0.7); /* Cambia el color del ícono a gris */
+}
+
+.menu-vertical li:hover .menu-text {
+  color: gray; /* Cambia el color del texto a gris */
 }
 
 .menu-text {
@@ -326,12 +415,12 @@ const cerrarSesion = async () => {
 
 .submenu {
   position: absolute;
-  left: 100%; /* Posiciona el submenú a la derecha del menú principal */
+  left: calc(100% + 5px); /* Posiciona el submenú a la derecha del menú principal */
   top: 0;
   width: 200px; /* Ancho del submenú */
   background-color: #1a1026; /* Color de fondo del submenú */
   border-radius: 8px; /* Esquinas redondeadas */
-  padding: 10px;
+  padding: 5px 17px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para el submenú */
   z-index: 10;
 }
@@ -343,7 +432,30 @@ const cerrarSesion = async () => {
 }
 
 .submenu li:hover {
-  background-color: #2c3e50; /* Color de fondo al pasar el mouse */
+  background-color: transparent; /* Color de fondo al pasar el mouse */
+  color: gray; /* Cambia el color del texto a gris */
 }
 
+/* Espacio invisible entre el menú y el submenú */
+.submenu::before {
+  content: "";
+  position: absolute;
+  left: -5px; /* Espacio entre el menú y el submenú */
+  top: 0;
+  width: 5px; /* Ancho del espacio invisible */
+  height: 100%;
+}
+
+.mh1-icon.active {
+  filter: brightness(0.7); /* Cambia el color del ícono a gris */
+}
+
+/* Estilos para el menú vertical cuando está expandido */
+.menu-vertical.expanded {
+  width: 200px; /* Ancho expandido del menú */
+}
+
+.menu-vertical.expanded .menu-text {
+  opacity: 1; /* Muestra el texto cuando el menú está expandido */
+}
 </style>
