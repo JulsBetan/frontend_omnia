@@ -87,8 +87,8 @@ export default defineComponent({
         }
 
         // Redirigir solo si no esta en una ruta protegida
-        if (router.currentRoute.value.path !== "/partidos") {
-          router.push("/partidos");
+        if (router.currentRoute.value.path !== "/inicio") {
+          router.push("/inicio");
         }
       } else if (event === "SIGNED_OUT") {
         if (isMagicLinkFlow.value) {

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../components/Auth/LoginOmnia.vue";
 import Signup from "../components/Auth/SignupOmnia.vue";
 import Partidos from "../components/Partidos/Partidos.vue";
+import Inicio from "../components/Inicio/Inicio.vue";
 import Detalle from "../components/Partidos/Detalle.vue";
 import axios from "axios";
 import { supabase } from "@/supabase/client";
@@ -18,6 +19,7 @@ const routes = [
   { path: "/signup", component: Signup },
   { path: "/partidos", component: Partidos, meta: { requiresAuth: true }, },
   { path: "/partidos/:id", name: "DetalleEvento", component: Detalle, meta: { requiresAuth: true }, props:  true },
+  { path: "/inicio", component: Inicio, meta: { requiresAuth: true }, },
 ];
 
 const router = createRouter({
