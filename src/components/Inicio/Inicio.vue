@@ -13,7 +13,7 @@
           </div>
           <div class="user-container">
             <img src="/assets/images/icons/user@3x.png" alt="user" class="user-icon">
-            <p v-if="user">{{ user.user_metadata?.name || user.user_metadata?.full_name || user.email  }}</p>
+            <p v-if="user">{{ user.user_metadata?.name || user.user_metadata?.full_name || (user.user_metadata?.firstName + ' ' + user.user_metadata?.lastName) ||user.email  }}</p>
           </div>
           <div class="close-sesion-container">
             <img src="/assets/images/icons/exit@3x.png" alt="exit" class="exit-icon">
@@ -265,6 +265,12 @@ const cerrarSesion = async () => {
 .busqueda-icon {
   width: 30px; /* Ajusta el tamaño del ícono */
   height: 30px; /* Ajusta el tamaño del ícono */
+}
+
+.bell-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .user-container {
