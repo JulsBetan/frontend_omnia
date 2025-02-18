@@ -122,15 +122,7 @@
     </aside> 
     <!-- Contenido Principal -->
     <main class="main-content">
-      <div class="progress-indicator">
-        <span>100% ▼</span>
-      </div>
-      <div class="notifications">
-        <span>⏰</span>
-        <span>⏰</span>
-        <span>⏰</span>
-        <span>⏰</span>
-      </div>
+        <router-view />
     </main>
   </div>
 </template>
@@ -185,6 +177,11 @@ const cerrarSesion = async () => {
   } catch (error) {
     console.error('Error al cerrar sesión:', error.message);
   } 
+};
+
+// Función para manejar la navegación
+const navigateTo = (route: string) => {
+  router.push(route);
 };
 </script>
 
