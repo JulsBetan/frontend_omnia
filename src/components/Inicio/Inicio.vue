@@ -33,97 +33,100 @@
         <img src="/assets/images/icons/icnBusqueda@3x.png" alt="busqueda" class="busqueda-icon">
       </div>
     </header>
-    <!-- Menu izquierdo -->
-    <aside class="menu-vertical" :class="{ 'expanded': isMenuExpanded }">
-      <ul class="menu-list">
-        <li>
-          <img src="/assets/images/icons/pieIconW@3x.png" alt="Dashboard" class="menu-icon" >
-          <span class="menu-text">Dashboard</span> <!-- Texto del menú -->
-        </li>
-        <li @mouseenter="mostrarSubmenu('administracion')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/projectIconW@3x.png" alt="Administracion" class="menu-icon" >
-          <span class="menu-text">Administración</span>
 
-          <!-- Submenú para "Administracion" -->
-          <ul v-if="submenuVisible === 'administracion'" class="submenu">
-            <li>Empresas</li>
-            <li>Unidades organizacionales</li>
-            <li>Reglas fonde de ahorro</li>
+    <div class="content-wrapper">
+        <!-- Menu izquierdo -->
+        <aside class="menu-vertical" :class="{ 'expanded': isMenuExpanded }">
+          <ul class="menu-list">
+            <li>
+              <img src="/assets/images/icons/pieIconW@3x.png" alt="Dashboard" class="menu-icon" >
+              <span class="menu-text">Dashboard</span> <!-- Texto del menú -->
+            </li>
+            <li @mouseenter="mostrarSubmenu('administracion')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/projectIconW@3x.png" alt="Administracion" class="menu-icon" >
+              <span class="menu-text">Administración</span>
+
+              <!-- Submenú para "Administracion" -->
+              <ul v-if="submenuVisible === 'administracion'" class="submenu">
+                <li @click="navigateTo('/inicio/empresas')">Empresas</li>
+                <li>Unidades organizacionales</li>
+                <li>Reglas fonde de ahorro</li>
+              </ul>
+            </li>
+            <li>
+              <img src="/assets/images/icons/personaIconW@3x.png" alt="Participantes" class="menu-icon" >
+              <span class="menu-text">Participantes</span>
+            </li>
+            <li @mouseenter="mostrarSubmenu('operaciones')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/opsIconW@3x.png" alt="Operaciones" class="menu-icon" >
+              <span class="menu-text">Operaciones</span>
+              <!-- Submenú para "Operaciones" -->
+              <ul v-if="submenuVisible === 'operaciones'" class="submenu">
+                <li>Aportaciones</li>
+                <li>Retiros</li>
+              </ul>
+            </li>
+            <li @mouseenter="mostrarSubmenu('aportaciones')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/aportacionesIconW@3x.png" alt="Aportaciones" class="menu-icon" >
+              <span class="menu-text">Aportaciones</span>
+              <!-- Submenú para "Aportaciones" -->
+              <ul v-if="submenuVisible === 'aportaciones'" class="submenu">
+                <li>Item1</li>
+                <li>Item2</li>
+              </ul>
+            </li>
+            <li @mouseenter="mostrarSubmenu('retiros')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/retirosIconW@3x.png" alt="Retiros" class="menu-icon" >
+              <span class="menu-text">Retiros</span>
+              <!-- Submenú para "Aportaciones" -->
+              <ul v-if="submenuVisible === 'retiros'" class="submenu">
+                <li>Item1</li>
+                <li>Item2</li>
+              </ul>
+            </li>
+            <li @mouseenter="mostrarSubmenu('prestamos')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/loansIconW@3x.png" alt="Prestamos" class="menu-icon" >
+              <span class="menu-text">Préstamos</span>
+              <!-- Submenú para "Prestamos" -->
+              <ul v-if="submenuVisible === 'prestamos'" class="submenu">
+                <li>Item1</li>
+                <li>Item2</li>
+              </ul>
+            </li>
+            <li @mouseenter="mostrarSubmenu('documentos')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/docsIconW@3x.png" alt="Documentos" class="menu-icon" >
+              <span class="menu-text">Documentos</span>
+              <!-- Submenú para "Documentos" -->
+              <ul v-if="submenuVisible === 'documentos'" class="submenu">
+                <li>Item1</li>
+                <li>Item2</li>
+              </ul>
+            </li>
+            <li @mouseenter="mostrarSubmenu('comunicados')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/comsIconW@3x.png" alt="Comunicados" class="menu-icon" >
+              <span class="menu-text">Comunicados</span>
+              <!-- Submenú para "Comunicados" -->
+              <ul v-if="submenuVisible === 'comunicados'" class="submenu">
+                <li>Item1</li>
+                <li>Item2</li>
+              </ul>
+            </li>
+            <li @mouseenter="mostrarSubmenu('ayuda')" @mouseleave="ocultarSubmenu">
+              <img src="/assets/images/icons/ayudaIconW@3x.png" alt="Ayuda" class="menu-icon" >
+              <span class="menu-text">Ayuda</span>
+              <!-- Submenú para "Ayuda" -->
+              <ul v-if="submenuVisible === 'ayuda'" class="submenu">
+                <li>Item1</li>
+                <li>Item2</li>
+              </ul>
+            </li>
           </ul>
-        </li>
-        <li>
-          <img src="/assets/images/icons/personaIconW@3x.png" alt="Participantes" class="menu-icon" >
-          <span class="menu-text">Participantes</span>
-        </li>
-        <li @mouseenter="mostrarSubmenu('operaciones')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/opsIconW@3x.png" alt="Operaciones" class="menu-icon" >
-          <span class="menu-text">Operaciones</span>
-          <!-- Submenú para "Operaciones" -->
-          <ul v-if="submenuVisible === 'operaciones'" class="submenu">
-            <li>Aportaciones</li>
-            <li>Retiros</li>
-          </ul>
-        </li>
-        <li @mouseenter="mostrarSubmenu('aportaciones')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/aportacionesIconW@3x.png" alt="Aportaciones" class="menu-icon" >
-          <span class="menu-text">Aportaciones</span>
-          <!-- Submenú para "Aportaciones" -->
-          <ul v-if="submenuVisible === 'aportaciones'" class="submenu">
-            <li>Item1</li>
-            <li>Item2</li>
-          </ul>
-        </li>
-        <li @mouseenter="mostrarSubmenu('retiros')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/retirosIconW@3x.png" alt="Retiros" class="menu-icon" >
-          <span class="menu-text">Retiros</span>
-          <!-- Submenú para "Aportaciones" -->
-          <ul v-if="submenuVisible === 'retiros'" class="submenu">
-            <li>Item1</li>
-            <li>Item2</li>
-          </ul>
-        </li>
-        <li @mouseenter="mostrarSubmenu('prestamos')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/loansIconW@3x.png" alt="Prestamos" class="menu-icon" >
-          <span class="menu-text">Préstamos</span>
-          <!-- Submenú para "Prestamos" -->
-          <ul v-if="submenuVisible === 'prestamos'" class="submenu">
-            <li>Item1</li>
-            <li>Item2</li>
-          </ul>
-        </li>
-        <li @mouseenter="mostrarSubmenu('documentos')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/docsIconW@3x.png" alt="Documentos" class="menu-icon" >
-          <span class="menu-text">Documentos</span>
-          <!-- Submenú para "Documentos" -->
-          <ul v-if="submenuVisible === 'documentos'" class="submenu">
-            <li>Item1</li>
-            <li>Item2</li>
-          </ul>
-        </li>
-        <li @mouseenter="mostrarSubmenu('comunicados')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/comsIconW@3x.png" alt="Comunicados" class="menu-icon" >
-          <span class="menu-text">Comunicados</span>
-          <!-- Submenú para "Comunicados" -->
-          <ul v-if="submenuVisible === 'comunicados'" class="submenu">
-            <li>Item1</li>
-            <li>Item2</li>
-          </ul>
-        </li>
-        <li @mouseenter="mostrarSubmenu('ayuda')" @mouseleave="ocultarSubmenu">
-          <img src="/assets/images/icons/ayudaIconW@3x.png" alt="Ayuda" class="menu-icon" >
-          <span class="menu-text">Ayuda</span>
-          <!-- Submenú para "Ayuda" -->
-          <ul v-if="submenuVisible === 'ayuda'" class="submenu">
-            <li>Item1</li>
-            <li>Item2</li>
-          </ul>
-        </li>
-      </ul>
-    </aside> 
-    <!-- Contenido Principal -->
-    <main class="main-content">
-        <router-view />
-    </main>
+        </aside> 
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <router-view />
+        </main>
+    </div>
   </div>
 </template>
 
@@ -300,14 +303,16 @@ const navigateTo = (route: string) => {
   background-color: #594198;
 }
 
-.main-content {
-  flex: 1;
+.content-wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
+  flex-grow: 1;
+  position: relative; /* Necesario para posicionar el menú de manera absoluta */
+}
+
+.main-content {
+  flex-grow: 1;
+  margin-left: 60px;
+  overflow: auto;
 }
 
 .progress-indicator {
@@ -356,7 +361,9 @@ const navigateTo = (route: string) => {
   border-radius: 15px; /* Esquinas redondeadas */
   margin: 5px 0px 0px 10px; /* Margen para separar el menú del borde */
   transition: width 0.3s ease;
-  height: 100%; /* Ocupa toda la altura disponible */
+  height: 80%; /* Ocupa toda la altura disponible */
+  position: absolute;
+  z-index: 10;
 }
 
 .menu-list {
@@ -372,6 +379,8 @@ const navigateTo = (route: string) => {
 
 .menu-vertical:hover {
   width: 200px; /* Ancho expandido del menú (íconos + texto) */
+  position: absolute; /* Posicionamiento absoluto para superponerse */
+  z-index: 10; /* Asegura que el menú esté por encima del contenido */
 }
 
 .menu-vertical ul {
@@ -456,6 +465,8 @@ const navigateTo = (route: string) => {
 /* Estilos para el menú vertical cuando está expandido */
 .menu-vertical.expanded {
   width: 200px; /* Ancho expandido del menú */
+  position: absolute; /* Posicionamiento absoluto para superponerse */
+  z-index: 10;
 }
 
 .menu-vertical.expanded .menu-text {
