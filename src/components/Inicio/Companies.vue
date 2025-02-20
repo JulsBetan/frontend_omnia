@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { supabase } from '@/supabase/client';
 
 interface Company {
@@ -14,6 +15,8 @@ const companies = ref<Company[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const searchQuery = ref('');
+
+const router = useRouter();
 
 const fetchCompanies = async () => {
   loading.value = true;
@@ -35,6 +38,11 @@ const fetchCompanies = async () => {
 
 onMounted(fetchCompanies);
 
+// Función para ir a la página anterior
+const goBack = () => {
+  window.history.back();
+};
+
 // Función para manejar la búsqueda
 const handleSearch = () => {
   console.log('Búsqueda:', searchQuery.value);
@@ -44,7 +52,7 @@ const handleSearch = () => {
 // Función para manejar el botón "Nuevo"
 const handleNew = () => {
   console.log('Nuevo');
-  // Aquí puedes implementar la lógica para agregar una nueva empresa
+  router.push('/inicio/empresas/alta');
 };
 
 </script>
@@ -52,6 +60,12 @@ const handleNew = () => {
 <template>
   <div class="main-content-company">
     <div class="title-container">
+      <img 
+        src="/assets/images/icons/iconBack@3x.png" 
+        alt="Volver" 
+        class="back-icon"
+        @click="goBack"
+      />
       <h2 class="title">Consulta Empresas</h2>
     </div>
     <div class="table-container">
@@ -70,6 +84,11 @@ const handleNew = () => {
         </button>
         <!-- Botón Nuevo -->
         <button @click="handleNew" class="new-button">
+          <img 
+            src="/assets/images/icons/iconAdd@3x.png" 
+            alt="Agregar" 
+            class="add-icon"
+          />
           Nuevo
         </button>
       </div>
@@ -110,7 +129,17 @@ const handleNew = () => {
 }
 
 .title-container {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  width: 93%;
+  margin-bottom: 0px; 
+}
+
+.back-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  margin-right: 0px;
 }
 
 /* Contenedor con borde redondeado y sombra */
@@ -127,41 +156,46 @@ const handleNew = () => {
 
 /* Estilos del título */
 .title {
+  flex-grow: 1; /* Hace que el título ocupe el espacio restante */
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
   color: black;
-  margin-bottom: 16px;
 }
 
 /* Contenedor "actions" */
 .actions-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
 /* Campo de búsqueda */
 .search-input {
-  flex-grow: 1;
-  padding: 8px;
+  width: 500px;
+  padding: 8px 12px 8px 40px;
   border: 1px solid #834f99;
   border-radius: 8px;
-  margin-right: 10px;
   font-size: 1rem;
+  color: #000;
+  background-color: transparent;
+  background-image: url('/assets/images/icons/icnBusqueda@3x.png'); /* Ícono de búsqueda */
+  background-size: 20px 20px; /* Tamaño del ícono */
+  background-position: 10px center; /* Posición del ícono */
+  background-repeat: no-repeat; /* Evita que el ícono se repita */
+  outline: none;
 }
 
 /* Botón Buscar */
 .search-button {
   padding: 8px 16px;
   border: 1px solid #834f99;
-  border-radius: 8px;
+  border-radius: 20px;
   background-color: transparent;
   color: #834f99;
   font-size: 1rem;
   cursor: pointer;
-  margin-right: 10px;
+  margin-left: 20px;
 }
 
 .search-button:hover {
@@ -171,14 +205,23 @@ const handleNew = () => {
 
 /* Botón Nuevo */
 .new-button {
+  display: flex;
+  align-items: center;
   padding: 8px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   background-color: #834f99;
   color: white;
   font-size: 1rem;
   cursor: pointer;
-  width: 100px;
+  width: 120px;
+  margin-left: auto;
+}
+
+.add-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
 }
 
 .new-button:hover {
@@ -210,7 +253,7 @@ thead {
 th {
   padding: 16px;
   text-align: center;
-  height: 48px;
+  height: 38px;
 }
 
 /* Celdas de la tabla */

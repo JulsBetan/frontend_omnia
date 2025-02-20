@@ -364,6 +364,7 @@ const navigateTo = (route: string) => {
   height: 80%; /* Ocupa toda la altura disponible */
   position: absolute;
   z-index: 10;
+  overflow: hidden; 
 }
 
 .menu-list {
@@ -381,6 +382,7 @@ const navigateTo = (route: string) => {
   width: 200px; /* Ancho expandido del menú (íconos + texto) */
   position: absolute; /* Posicionamiento absoluto para superponerse */
   z-index: 10; /* Asegura que el menú esté por encima del contenido */
+  overflow: visible;
 }
 
 .menu-vertical ul {
@@ -467,6 +469,10 @@ const navigateTo = (route: string) => {
   width: 200px; /* Ancho expandido del menú */
   position: absolute; /* Posicionamiento absoluto para superponerse */
   z-index: 10;
+}
+
+.menu-vertical:not(.expanded) {
+    /*overflow: hidden;    /* Evita que el contenido sea accesible */
 }
 
 .menu-vertical.expanded .menu-text {

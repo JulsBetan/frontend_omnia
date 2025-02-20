@@ -5,6 +5,7 @@ import Partidos from "../components/Partidos/Partidos.vue";
 import Inicio from "../components/Inicio/Inicio.vue";
 import Dashboard from "../components/Inicio/Dashboard.vue";
 import Companies from "../components/Inicio/Companies.vue";
+import CompaniesCreate from "../components/Inicio/CompaniesCreate.vue";
 import Participants from "../components/Inicio/Participants.vue";
 import Detalle from "../components/Partidos/Detalle.vue";
 import axios from "axios";
@@ -28,6 +29,7 @@ const routes = [
     children: [
       { path: '', component: Dashboard }, // Página principal
       { path: 'empresas', component: Companies },
+      { path: 'empresas/alta', component: CompaniesCreate },
       { path: 'participantes', component: Participants },
     ]
   },
