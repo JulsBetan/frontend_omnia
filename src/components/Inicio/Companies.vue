@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { supabase } from '@/supabase/client';
 
@@ -17,6 +17,10 @@ const error = ref<string | null>(null);
 const searchQuery = ref('');
 
 const router = useRouter();
+
+// Paginación
+const itemsPerPage = 5;
+const currentPage = ref(1);
 
 const fetchCompanies = async () => {
   loading.value = true;
@@ -38,6 +42,25 @@ const fetchCompanies = async () => {
 
 onMounted(fetchCompanies);
 
+const paginatedCompanies = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  return companies.value.slice(start, start + itemsPerPage);
+});
+
+const totalPages = computed(() => Math.ceil(companies.value.length / itemsPerPage));
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
 // Función para ir a la página anterior
 const goBack = () => {
   window.history.back();
@@ -53,6 +76,11 @@ const handleSearch = () => {
 const handleNew = () => {
   console.log('Nuevo');
   router.push('/inicio/empresas/alta');
+};
+
+// Redirigir a la página de actualización de una empresa
+const navigateToUpdate = (companyId: number) => {
+  router.push(`/inicio/empresas/editar/${companyId}`);
 };
 
 </script>
@@ -106,19 +134,69 @@ const handleNew = () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(company, index) in companies" :key="company.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray'">
-            <td>{{ company.business_name }}</td>
+          <tr v-for="(company, index) in paginatedCompanies" :key="company.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray'">
+            <td>
+                <a class="company-link" @click="navigateToUpdate(company.id)">
+                  {{ company.business_name }}
+                </a>
+            </td>
             <td>{{ company.industry }}</td>
             <td>{{ company.sector }}</td>
             <td>{{ company.code }}</td>
           </tr>
         </tbody>
       </table>
+
+      <div class="pagination">
+        <button @click="prevPage" :disabled="currentPage === 1">Anterior</button>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <button @click="nextPage" :disabled="currentPage === totalPages">Siguiente</button>
+      </div>
+
     </div>
   </div>
 </template>
 
 <style scoped>
+
+.company-link {
+  color: #834f99;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.company-link:hover {
+  color: #6b3d7f;
+}
+
+.pagination {
+  position: absolute;
+  bottom: 30px; /* Fija la distancia desde el bottom */
+  left: 50%; /* Centra horizontalmente */
+  transform: translateX(-50%); /* Asegura el centrado exacto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.pagination button {
+  padding: 8px 12px;
+  border: 1px solid #834f99;
+  background-color: #834f99;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #ae96b7; /* Cambia este color según lo que necesites */
+  font-weight: bold; /* Opcional: hace que el texto sea más visible */
+}
+
 /* Asegura que main-content no afecte el header */
 .main-content-company {
   display: flex;
@@ -144,12 +222,13 @@ const handleNew = () => {
 
 /* Contenedor con borde redondeado y sombra */
 .table-container {
+  position: relative;
   background-color: white;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 90%;
-  height: 70%;
+  height: 60%;
   border: 1px solid #d8d8d8;
   margin-top: 0px;
 }
@@ -167,7 +246,7 @@ const handleNew = () => {
 .actions-container {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 /* Campo de búsqueda */
@@ -241,6 +320,7 @@ const handleNew = () => {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid #d8d8d8;
+  margin-top: 30px;
 }
 
 /* Encabezado */
@@ -251,14 +331,14 @@ thead {
 }
 
 th {
-  padding: 16px;
+  padding: 14px 8px;
   text-align: center;
-  height: 38px;
+  height: 18px;
 }
 
 /* Celdas de la tabla */
 td {
-  padding: 12px;
+  padding: 4px 8px;
   text-align: center;
   color: black; /* Color de texto negro */
   border: 1px solid #d8d8d8;
@@ -269,5 +349,8 @@ td {
   background-color: #d8d8d8;
 }
 
+table {
+  font-size: 14px;  /* Reduce el tamaño de la letra */
+}
 
 </style>

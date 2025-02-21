@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { supabase } from '@/supabase/client';
-import { useRouter } from 'vue-router';
 
+// Instancias de Vue Router
 const router = useRouter();
+const route = useRoute();
 
-// Datos de la nueva empresa
+// Variables reactivas
+const companyId = ref<number | null>(null);
 const businessName = ref('');
 const industry = ref('');
 const sector = ref('');
@@ -21,33 +24,73 @@ const sectors = [
   'Aeroespacial', 'Agricultura', 'Automotriz', 'Informática y electrónica', 'Bienes de consumo', 'Educación'
 ];
 
-// Función para guardar la empresa en Supabase
-const saveCompany = async () => {
+// Cargar datos de la empresa
+onMounted(async () => {
+  companyId.value = Number(route.params.id);
+  
+  const { data, error: fetchError } = await supabase
+    .from('companies')
+    .select('*')
+    .eq('id', companyId.value)
+    .single();
+
+  if (fetchError) {
+    errorMessage.value = 'Error al cargar la empresa';
+    console.error(fetchError);
+  } else {
+    businessName.value = data.business_name;
+    industry.value = data.industry;
+    sector.value = data.sector;
+    code.value = data.code;
+  }
+});
+
+// Actualizar la empresa
+const updateCompany = async () => {
   if (!businessName.value || !industry.value || !sector.value || !code.value) {
     errorMessage.value = 'Todos los campos son obligatorios';
     return;
   }
 
-  const { error } = await supabase.from('companies').insert([
-    {
+  const { error: updateError } = await supabase
+    .from('companies')
+    .update({
       business_name: businessName.value,
       industry: industry.value,
       sector: sector.value,
-      code: code.value
-    }
-  ]);
+      code: code.value,
+    })
+    .eq('id', companyId.value);
 
-  if (error) {
-    errorMessage.value = 'Error al guardar la empresa';
-    console.error(error);
+  if (updateError) {
+    errorMessage.value = 'Error al actualizar la empresa';
+    console.error(updateError);
   } else {
-    router.push('/inicio/empresas'); // Redirigir a la lista de empresas
+    router.push('/inicio/empresas');
   }
 };
 
-// Función para regresar a la página anterior
+// Eliminar la empresa
+const deleteCompany = async () => {
+  const confirmDelete = confirm('¿Estás seguro de que deseas eliminar esta empresa?');
+  if (!confirmDelete) return;
+
+  const { error: deleteError } = await supabase
+    .from('companies')
+    .delete()
+    .eq('id', companyId.value);
+
+  if (deleteError) {
+    errorMessage.value = 'Error al eliminar la empresa';
+    console.error(deleteError);
+  } else {
+    router.push('/inicio/empresas');
+  }
+};
+
+// Volver a la lista de empresas
 const goBack = () => {
-  router.back();
+  router.push('/inicio/empresas');
 };
 </script>
 
@@ -60,7 +103,7 @@ const goBack = () => {
         class="back-icon"
         @click="goBack"
       />
-      <h2 class="title">Nueva Empresa</h2>
+      <h2 class="title">Editar Empresa</h2>
     </div>
     <div class="form-container">
       <div class="form-row">
@@ -90,13 +133,21 @@ const goBack = () => {
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <div class="button-group">
         <button @click="goBack" class="cancel-button">Cancelar</button>
-        <button @click="saveCompany" class="save-button">
+        <button @click="updateCompany" class="save-button">
           <img 
             src="/assets/images/icons/saveIconW@3x.png" 
             alt="Guardar" 
             class="save-icon"
           />
           Guardar
+        </button>
+        <button @click="deleteCompany" class="delete-button">
+          <img 
+            src="/assets/images/icons/deleteIcon@3x.png" 
+            alt="Eliminar" 
+            class="delete-icon"
+          />
+          Eliminar
         </button>
       </div>
     </div>
@@ -194,7 +245,7 @@ input, select {
   color: white;
 }
 
-.save-icon {
+.save-icon, .delete-icon {
   width: 20px;
   height: 20px;
   margin-right: 8px;
@@ -217,5 +268,22 @@ input, select {
 .save-button:hover {
   background-color: #6b3d7f;
 }
-</style>
 
+.delete-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: red;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 140px;
+  gap: 10px;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+</style>
