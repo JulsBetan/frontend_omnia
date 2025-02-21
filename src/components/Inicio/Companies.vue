@@ -42,12 +42,22 @@ const fetchCompanies = async () => {
 
 onMounted(fetchCompanies);
 
-const paginatedCompanies = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  return companies.value.slice(start, start + itemsPerPage);
+const filteredCompanies = computed(() => {
+  if (!searchQuery.value) {
+    return companies.value;
+  }
+  const query = searchQuery.value.toLowerCase();
+  return companies.value.filter(company =>
+    company.business_name.toLowerCase().includes(query)
+  );
 });
 
-const totalPages = computed(() => Math.ceil(companies.value.length / itemsPerPage));
+const paginatedCompanies = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  return filteredCompanies.value.slice(start, start + itemsPerPage);
+});
+
+const totalPages = computed(() => Math.ceil(filteredCompanies.value.length / itemsPerPage));
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
