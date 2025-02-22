@@ -8,89 +8,86 @@ const router = useRouter();
 const route = useRoute();
 
 // Variables reactivas
-const companyId = ref<number | null>(null);
-const businessName = ref('');
-const industry = ref('');
-const sector = ref('');
+const unitId = ref<number | null>(null);
+const unitName = ref('');
+const location = ref('');
 const code = ref('');
 const errorMessage = ref('');
 
 const industries = [
   'Educación', 'Negocio', 'Gobierno - Estatal y local', 'Gobierno - Federal',
-  'Organización sin fines de lucro', 'Trabajador autónomo', 'Pequeña o mediana empresa', 'Start-Up'
+  'Organización sin fines de lucro', 'Trabajador autónomo', 'Pequeña o mediana unidad', 'Start-Up'
 ];
 
 const sectors = [
   'Aeroespacial', 'Agricultura', 'Automotriz', 'Informática y electrónica', 'Bienes de consumo', 'Educación'
 ];
 
-// Cargar datos de la empresa
+// Cargar datos de la unidad
 onMounted(async () => {
-  companyId.value = Number(route.params.id);
+  unitId.value = Number(route.params.id);
   
   const { data, error: fetchError } = await supabase
-    .from('companies')
+    .from('units')
     .select('*')
-    .eq('id', companyId.value)
+    .eq('id', unitId.value)
     .single();
 
   if (fetchError) {
-    errorMessage.value = 'Error al cargar la empresa';
+    errorMessage.value = 'Error al cargar la unidad';
     console.error(fetchError);
   } else {
-    businessName.value = data.business_name;
-    industry.value = data.industry;
-    sector.value = data.sector;
+    unitName.value = data.unit_name;
+    location.value = data.location;
     code.value = data.code;
   }
 });
 
-// Actualizar la empresa
-const updateCompany = async () => {
-  if (!businessName.value || !industry.value || !sector.value || !code.value) {
+// Actualizar la unidad
+const updateUnit = async () => {
+  if (!unitName.value || !location.value || !code.value) {
     errorMessage.value = 'Todos los campos son obligatorios';
     return;
   }
 
   const { error: updateError } = await supabase
-    .from('companies')
+    .from('units')
     .update({
-      business_name: businessName.value,
-      industry: industry.value,
-      sector: sector.value,
+      unit_name: unitName.value,
+      location: location.value,
       code: code.value,
     })
-    .eq('id', companyId.value);
+    .eq('id', unitId.value);
 
   if (updateError) {
-    errorMessage.value = 'Error al actualizar la empresa';
+    errorMessage.value = 'Error al actualizar la unidad';
     console.error(updateError);
   } else {
-    router.push('/inicio/empresas');
+    router.push('/inicio/unidades');
   }
 };
 
-// Eliminar la empresa
-const deleteCompany = async () => {
-  const confirmDelete = confirm('¿Estás seguro de que deseas eliminar esta empresa?');
+// Eliminar la unidad
+const deleteUnit = async () => {
+  const confirmDelete = confirm('¿Estás seguro de que deseas eliminar esta unidad?');
   if (!confirmDelete) return;
 
   const { error: deleteError } = await supabase
-    .from('companies')
+    .from('units')
     .delete()
     .eq('id', companyId.value);
 
   if (deleteError) {
-    errorMessage.value = 'Error al eliminar la empresa';
+    errorMessage.value = 'Error al eliminar la unidad';
     console.error(deleteError);
   } else {
-    router.push('/inicio/empresas');
+    router.push('/inicio/unidades');
   }
 };
 
-// Volver a la lista de empresas
+// Volver a la lista de unidades
 const goBack = () => {
-  router.push('/inicio/empresas');
+  router.push('/inicio/unidades');
 };
 </script>
 
@@ -103,27 +100,17 @@ const goBack = () => {
         class="back-icon"
         @click="goBack"
       />
-      <h2 class="title">Editar Empresa</h2>
+      <h2 class="title">Editar Unidad Organizacional</h2>
     </div>
     <div class="form-container">
       <div class="form-row">
         <div class="input-group">
-          <label>Razón Social</label>
-          <input v-model="businessName" type="text" placeholder="Capture Razón Social..."/>
+          <label>Unidad Organizacional</label>
+          <input v-model="unitName" type="text" placeholder="Capture Unidad Organizacional..."/>
         </div>
         <div class="input-group">
-          <label>Giro</label>
-          <select v-model="industry">
-            <option value="" disabled>Seleccione una opción</option>
-            <option v-for="option in industries" :key="option" :value="option">{{ option }}</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Sector</label>
-          <select v-model="sector">
-            <option value="" disabled>Seleccione una opción</option>
-            <option v-for="option in sectors" :key="option" :value="option">{{ option }}</option>
-          </select>
+          <label>Ubicación</label>
+          <input v-model="location" type="text" placeholder="Capture Ubicación..."/>
         </div>
         <div class="input-group">
           <label>Código</label>
@@ -133,7 +120,7 @@ const goBack = () => {
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <div class="button-group">
         <button @click="goBack" class="cancel-button">Cancelar</button>
-        <button @click="updateCompany" class="save-button">
+        <button @click="updateUnit" class="save-button">
           <img 
             src="/assets/images/icons/saveIconW@3x.png" 
             alt="Guardar" 
@@ -141,7 +128,7 @@ const goBack = () => {
           />
           Guardar
         </button>
-        <button @click="deleteCompany" class="delete-button">
+        <button @click="deleteUnit" class="delete-button">
           <img 
             src="/assets/images/icons/deleteIcon@3x.png" 
             alt="Eliminar" 

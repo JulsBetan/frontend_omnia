@@ -7,6 +7,9 @@ import Dashboard from "../components/Inicio/Dashboard.vue";
 import Companies from "../components/Inicio/Companies.vue";
 import CompaniesCreate from "../components/Inicio/CompaniesCreate.vue";
 import CompaniesUpdate from "../components/Inicio/CompaniesUpdate.vue";
+import Units from "../components/Inicio/Units.vue";
+import UnitsCreate from "../components/Inicio/UnitsCreate.vue";
+import UnitsUpdate from "../components/Inicio/UnitsUpdate.vue";
 import Participants from "../components/Inicio/Participants.vue";
 import Detalle from "../components/Partidos/Detalle.vue";
 import axios from "axios";
@@ -32,6 +35,9 @@ const routes = [
       { path: 'empresas', component: Companies },
       { path: 'empresas/alta', component: CompaniesCreate },
       { path: 'empresas/editar/:id', component: CompaniesUpdate },
+      { path: 'unidades', component: Units },
+      { path: 'unidades/alta', component: UnitsCreate },
+      { path: 'unidades/editar/:id', component: UnitsUpdate },
       { path: 'participantes', component: Participants },
     ]
   },

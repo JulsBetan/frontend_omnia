@@ -49,7 +49,7 @@
               <!-- Submenú para "Administracion" -->
               <ul v-if="submenuVisible === 'administracion'" class="submenu">
                 <li @click="navigateTo('/inicio/empresas')">Empresas</li>
-                <li>Unidades organizacionales</li>
+                <li @click="navigateTo('/inicio/unidades')">Unidades organizacionales</li>
                 <li>Reglas fonde de ahorro</li>
               </ul>
             </li>

@@ -6,9 +6,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 // Datos de la nueva empresa
-const businessName = ref('');
-const industry = ref('');
-const sector = ref('');
+const unitName = ref('');
+const location = ref('');
 const code = ref('');
 const errorMessage = ref('');
 
@@ -23,16 +22,15 @@ const sectors = [
 
 // Función para guardar la empresa en Supabase
 const saveCompany = async () => {
-  if (!businessName.value || !industry.value || !sector.value || !code.value) {
+  if (!unitName.value || !location.value || !code.value) {
     errorMessage.value = 'Todos los campos son obligatorios';
     return;
   }
 
-  const { error } = await supabase.from('companies').insert([
+  const { error } = await supabase.from('units').insert([
     {
-      business_name: businessName.value,
-      industry: industry.value,
-      sector: sector.value,
+      unit_name: unitName.value,
+      location: location.value,
       code: code.value
     }
   ]);
@@ -41,7 +39,7 @@ const saveCompany = async () => {
     errorMessage.value = 'Error al guardar la empresa';
     console.error(error);
   } else {
-    router.push('/inicio/empresas'); // Redirigir a la lista de empresas
+    router.push('/inicio/unidades'); // Redirigir a la lista de unidades
   }
 };
 
@@ -60,31 +58,21 @@ const goBack = () => {
         class="back-icon"
         @click="goBack"
       />
-      <h2 class="title">Nueva Empresa</h2>
+      <h2 class="title">Nueva Unidad Organizacional</h2>
     </div>
     <div class="form-container">
       <div class="form-row">
         <div class="input-group">
-          <label>Razón Social</label>
-          <input v-model="businessName" type="text" placeholder="Capture Razón Social..."/>
+          <label>Unidad Organizacional</label>
+          <input v-model="unitName" type="text" placeholder="Capture Unidad Organizacional..."/>
         </div>
         <div class="input-group">
-          <label>Giro</label>
-          <select v-model="industry">
-            <option value="" disabled>Seleccione una opción</option>
-            <option v-for="option in industries" :key="option" :value="option">{{ option }}</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Sector</label>
-          <select v-model="sector">
-            <option value="" disabled>Seleccione una opción</option>
-            <option v-for="option in sectors" :key="option" :value="option">{{ option }}</option>
-          </select>
+          <label>Ubicación</label>
+          <input v-model="location" type="text" placeholder="Capture Ubicación..."/>
         </div>
         <div class="input-group">
           <label>Código</label>
-          <input v-model="code" type="text" />
+          <input v-model="code" type="text" placeholder="Capture Código..."/>
         </div>
       </div>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>

@@ -1,0 +1,132 @@
+
+.main-content-company {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  width: 93%;
+}
+
+.back-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.title {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+}
+
+.form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: black;
+}
+
+input, select {
+  padding: 8px;
+  border: 1px solid #834f99;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #000;
+  background-color: transparent;
+  outline: none;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.button-group {
+  margin-top: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra los botones horizontalmente */
+  gap: 20px; /* Espacio horizontal entre los botones */
+}
+
+.cancel-button {
+  background-color: transparent;
+  color: #834f99;
+  border: 1px solid #834f99;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 140px;
+}
+
+.cancel-button:hover {
+  background-color: #834f99;
+  color: white;
+}
+
+.save-icon, .delete-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.save-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: #834f99;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 140px;
+  gap: 10px;
+}
+
+.save-button:hover {
+  background-color: #6b3d7f;
+}
+
+.delete-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: red;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 140px;
+  gap: 10px;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
