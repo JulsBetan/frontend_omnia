@@ -5,7 +5,7 @@ import type { User } from '@supabase/supabase-js';
 
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref(null);
+  const user = ref<User | null>(null);
 
   // Establece el usuario
   const setUser = (userData: User | null) => {

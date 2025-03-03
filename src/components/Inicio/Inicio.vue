@@ -136,13 +136,22 @@ import { useUserStore } from '@/stores/userStore'; // Importa el store
 import { useRouter } from 'vue-router';
 import { supabase } from '@/supabase/client';
 
-const userStore = useUserStore();
+import type { User } from '@supabase/supabase-js';
 
+type CustomUser = User & {
+  user_metadata?: {
+    name?: string;
+    full_name?: string;
+    firstName?: string;
+    lastName?: string;
+  };
+};
+
+const userStore = useUserStore();
 const router = useRouter();
 
-const user = ref(null);
+const user = ref<CustomUser | null>(null);
 const submenuVisible = ref(null); // Controla qué submenú está visible
-
 // Estado para controlar si el menú está expandido
 const isMenuExpanded = ref(false);
 
@@ -152,7 +161,7 @@ const toggleMenu = () => {
 };
 
 // Mostrar el submenú correspondiente
-const mostrarSubmenu = (menu) => {
+const mostrarSubmenu = (menu: string) => {
   submenuVisible.value = menu;
 };
 
@@ -164,10 +173,10 @@ const ocultarSubmenu = () => {
 onMounted(async () => {
   try {
     await userStore.fetchUser(); // Obtén el usuario desde el store
-    user.value = userStore.user; // Asigna el usuario a la ref
+    user.value = userStore.user as CustomUser; // Asigna el usuario a la ref
     console.log('Usuario:', user.value); // Verifica la estructura del usuario
   } catch (error) {
-    console.error('Error al obtener el usuario:', error.message);
+    console.error('Error al obtener el usuario:', (error as Error).message);
   } 
 });
 
@@ -178,7 +187,7 @@ const cerrarSesion = async () => {
     userStore.clearUser(); // Limpia el usuario en el store
     router.push('/login'); // Redirige al usuario a la página de login
   } catch (error) {
-    console.error('Error al cerrar sesión:', error.message);
+    console.error('Error al cerrar sesión:', (error as Error).message);
   } 
 };
 
