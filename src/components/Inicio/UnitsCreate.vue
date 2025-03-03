@@ -11,15 +11,6 @@ const location = ref('');
 const code = ref('');
 const errorMessage = ref('');
 
-const industries = [
-  'Educación', 'Negocio', 'Gobierno - Estatal y local', 'Gobierno - Federal',
-  'Organización sin fines de lucro', 'Trabajador autónomo', 'Pequeña o mediana empresa', 'Start-Up'
-];
-
-const sectors = [
-  'Aeroespacial', 'Agricultura', 'Automotriz', 'Informática y electrónica', 'Bienes de consumo', 'Educación'
-];
-
 // Función para guardar la empresa en Supabase
 const saveCompany = async () => {
   if (!unitName.value || !location.value || !code.value) {

@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { supabase } from '@/supabase/client'; // Importa la instancia de Supabase
+import type { User } from '@supabase/supabase-js';
+
 
 export const useUserStore = defineStore('user', () => {
   const user = ref(null);
 
   // Establece el usuario
-  const setUser = (userData) => {
+  const setUser = (userData: User | null) => {
     user.value = userData;
   };
 

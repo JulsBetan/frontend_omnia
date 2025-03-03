@@ -14,15 +14,6 @@ const location = ref('');
 const code = ref('');
 const errorMessage = ref('');
 
-const industries = [
-  'Educación', 'Negocio', 'Gobierno - Estatal y local', 'Gobierno - Federal',
-  'Organización sin fines de lucro', 'Trabajador autónomo', 'Pequeña o mediana unidad', 'Start-Up'
-];
-
-const sectors = [
-  'Aeroespacial', 'Agricultura', 'Automotriz', 'Informática y electrónica', 'Bienes de consumo', 'Educación'
-];
-
 // Cargar datos de la unidad
 onMounted(async () => {
   unitId.value = Number(route.params.id);
@@ -75,7 +66,7 @@ const deleteUnit = async () => {
   const { error: deleteError } = await supabase
     .from('units')
     .delete()
-    .eq('id', companyId.value);
+    .eq('id', unitId.value);
 
   if (deleteError) {
     errorMessage.value = 'Error al eliminar la unidad';

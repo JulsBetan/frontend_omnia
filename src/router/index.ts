@@ -12,7 +12,7 @@ import UnitsCreate from "../components/Inicio/UnitsCreate.vue";
 import UnitsUpdate from "../components/Inicio/UnitsUpdate.vue";
 import Participants from "../components/Inicio/Participants.vue";
 import Detalle from "../components/Partidos/Detalle.vue";
-import axios from "axios";
+// import axios from "axios";
 import { supabase } from "@/supabase/client";
 
 const URL_DEPORTES = import.meta.env.VITE_API_DEPORTES_URL;
