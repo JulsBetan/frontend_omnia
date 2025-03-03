@@ -23,7 +23,8 @@ export default defineComponent({
       }
 
       // Obtener el timestamp de la última sesión activa
-      const lastSignIn = new Date(data.user.last_sign_in_at).getTime();
+      const lastSignIn = data.user.last_sign_in_at
+        ? new Date(data.user.last_sign_in_at).getTime() : 0;
       const now = new Date().getTime();
 
       // Definir tiempo máximo de sesión (ejemplo: 1 hora)
@@ -39,7 +40,7 @@ export default defineComponent({
     }; // checkSession
 
 
-    const handleAuthStateChange = async (event: string, session: any) => {
+    const handleAuthStateChange = async (event: string, session: Session | null) => {
       if (event === "SIGNED_IN" && session?.user) {
         console.log("Usuario autenticado:", session.user);
         isMagicLinkFlow.value = false; // Restablecer la bandera
@@ -114,8 +115,8 @@ export default defineComponent({
         console.log("Usuario autenticado, verificando perfil...");
         const { data: session } = await supabase.auth.getSession();
 
-        if (session?.user) {
-          await handleAuthStateChange("SIGNED_IN", session);
+        if (session?.session?.user) {
+          await handleAuthStateChange("SIGNED_IN", session.session);
         }
 
         // Revisar cada 5 minutos si la sesión sigue activa.
