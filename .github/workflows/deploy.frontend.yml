@@ -18,8 +18,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -f Dockerfile.prod -t ${{ secrets.DOCKER_HUB_USERNAME }}/frontend_kingtide:latest .
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend_kingtide:latest
+        docker build -f Dockerfile.prod -t ${{ secrets.DOCKER_HUB_USERNAME }}/frontend_omnia:latest .
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend_omnia:latest
 
     - name: Deploy to Droplet with docker-compose
       uses: appleboy/ssh-action@v0.1.7
@@ -28,6 +28,6 @@ jobs:
         username: ${{ secrets.DIGITALOCEAN_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /root/projects/king_tide/deploy_kingtide
+          cd /root/projects/omnia/deploy_omnia
           docker-compose -f docker-compose.prod.yml pull frontend
           docker-compose -f docker-compose.prod.yml up -d frontend
