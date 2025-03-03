@@ -151,7 +151,7 @@ const userStore = useUserStore();
 const router = useRouter();
 
 const user = ref<CustomUser | null>(null);
-const submenuVisible = ref(null); // Controla qué submenú está visible
+const submenuVisible = ref<string | null>(null); // Controla qué submenú está visible
 // Estado para controlar si el menú está expandido
 const isMenuExpanded = ref(false);
 

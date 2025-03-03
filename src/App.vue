@@ -2,6 +2,7 @@
 import { defineComponent, onMounted, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase/client";
+import type { Session } from "@supabase/supabase-js";
 
 export default defineComponent({
   name: "App",
