@@ -120,6 +120,7 @@ export default defineComponent({
             email: email.value,
             options: {
               shouldCreateUser: false, // Evita crear un nuevo usuario si no existe
+              emailRedirectTo: import.meta.env.VITE_SUPABASE_REDIRECT_URL,
             },
           });
 
@@ -149,7 +150,7 @@ export default defineComponent({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "http://localhost:5173/inicio", // URL a la que redirigir tras el login
+          redirectTo: import.meta.env.VITE_SUPABASE_REDIRECT_URL, // URL a la que redirigir tras el login
           queryParams: { prompt: "select_account"}
         },
       });
