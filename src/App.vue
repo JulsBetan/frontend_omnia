@@ -47,9 +47,13 @@ export default defineComponent({
         isMagicLinkFlow.value = false; // Restablecer la bandera
 
         const profileExistsKey = `profile_exists_${session.user.id}`;
-        if (localStorage.getItem(profileExistsKey)) {
+        if (localStorage.getItem(profileExistsKey)) { // Se guarda en localstorage para evitar consultar si hacer falta guardar nuevo usuario
           console.log("✅ Perfil ya marcado en localStorage, evitando consulta.");
           //router.push("/partidos");
+
+          if (router.currentRoute.value.path !== "/inicio") {
+            router.push("/inicio");
+          }
           return;
         }
 
