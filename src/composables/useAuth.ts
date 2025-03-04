@@ -24,10 +24,25 @@ export function useAuth() {
     }
   };
 
+  const signInWithMagicLink = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: import.meta.env.VITE_SUPABASE_REDIRECT_URL, // Asegura que se envía la URL correcta
+      },
+    });
+
+    if (error) {
+      console.error("Error enviando Magic Link:", error.message);
+    } else {
+      console.log("Magic Link enviado a:", email);
+    }
+  };
+
   onMounted(() => {
     //  Revisar cada 5 minutos si la sesión sigue activa
     setInterval(checkSession, 5 * 60 * 1000); // 5 minutos
   });
 
-  return { user, checkSession };
+  return { user, checkSession, signInWithMagicLink };
 }
