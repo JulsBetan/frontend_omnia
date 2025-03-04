@@ -3,14 +3,14 @@ import { defineComponent, onMounted, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase/client";
 import type { Session } from "@supabase/supabase-js";
-import type { AuthSubscription } from "@supabase/supabase-js";
+import type { Subscription } from "@supabase/supabase-js";
 
 
 export default defineComponent({
   name: "App",
   setup() {
     const router = useRouter();
-    let authListener: AuthSubscription | null = null;
+    let authListener: Subscription | null = null;
     let sessionChecker: NodeJS.Timeout | null = null;
 
     const isMagicLinkFlow = ref(false);
