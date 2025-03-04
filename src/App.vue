@@ -3,12 +3,14 @@ import { defineComponent, onMounted, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase/client";
 import type { Session } from "@supabase/supabase-js";
+import type { AuthSubscription } from "@supabase/supabase-js";
+
 
 export default defineComponent({
   name: "App",
   setup() {
     const router = useRouter();
-    let authListener: { unsubscribe: () => void } | null = null;
+    let authListener: AuthSubscription | null = null;
     let sessionChecker: NodeJS.Timeout | null = null;
 
     const isMagicLinkFlow = ref(false);
@@ -116,8 +118,8 @@ export default defineComponent({
 
     onMounted(async () => {
       console.log("🔄 Registrando listener de Supabase");
-      const { data: listener } = supabase.auth.onAuthStateChange(handleAuthStateChange);
-      authListener = listener;
+      const { data } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+      authListener = data.subscription; // Guardamos la suscripcion
 
       const { data: session } = await supabase.auth.getSession();
       if (session?.session?.user) {
