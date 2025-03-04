@@ -8,51 +8,57 @@ export default defineComponent({
   name: "App",
   setup() {
     const router = useRouter();
-    let authListener: any;
-    let sessionChecker: NodeJS.Timeout | null = null; // Inicializa como null
-    const isMagicLinkFlow = ref(false); // Bandera para detectar el flujo del magic link
+    let authListener: { unsubscribe: () => void } | null = null;
+    let sessionChecker: NodeJS.Timeout | null = null;
+
+    const isMagicLinkFlow = ref(false);
+    const initialSessionChecked = ref(false);
+    const sessionRestored = ref(false);
 
     const checkSession = async () => {
-        console.log("⚠️  Check Sesión");
+      console.log("⚠️ Check Sesión");
       const { data, error } = await supabase.auth.getUser();
 
       if (error || !data?.user) {
         console.log("⚠️ No hay usuario autenticado, redirigiendo a login...");
-        // await supabase.auth.signOut();
+        await supabase.auth.signOut();
         router.push("/login");
         return false;
       }
 
-      // Obtener el timestamp de la última sesión activa
-      const lastSignIn = data.user.last_sign_in_at
-        ? new Date(data.user.last_sign_in_at).getTime() : 0;
-      const now = new Date().getTime();
-
-      // Definir tiempo máximo de sesión (ejemplo: 1 hora)
-      const sessionExpiryTime = 60 * 60 * 1000; // 1 hora en milisegundos
-
-      if (now - lastSignIn > sessionExpiryTime) {
-        console.log("⚠️ Sesión expirada, cerrando sesión...");
-        await supabase.auth.signOut();
-        router.push("/login");
-        return  false;
-      }
       return true;
-    }; // checkSession
-
+    };
 
     const handleAuthStateChange = async (event: string, session: Session | null) => {
+      console.log(`🟡 Evento de autenticación detectado: ${event}`);
+
+      if (event === "INITIAL_SESSION") {
+        console.log("🔄 Sesión inicial detectada, evitando redirección.");
+        initialSessionChecked.value = true;
+        sessionRestored.value = !!session?.user; // Marcar si la sesión ya estaba activa
+        return;
+      }
+
       if (event === "SIGNED_IN" && session?.user) {
+        // ⚠️ IGNORAMOS SIGNED_IN SI LA SESIÓN YA ESTABA RESTAURADA
+        if (sessionRestored.value) {
+          console.log("🚀 Sesión ya restaurada, ignorando evento SIGNED_IN.");
+          return;
+        }
+
         console.log("Usuario autenticado:", session.user);
-        isMagicLinkFlow.value = false; // Restablecer la bandera
+        isMagicLinkFlow.value = false;
 
         const profileExistsKey = `profile_exists_${session.user.id}`;
-        if (localStorage.getItem(profileExistsKey)) { // Se guarda en localstorage para evitar consultar si hacer falta guardar nuevo usuario
+        if (localStorage.getItem(profileExistsKey)) {
           console.log("✅ Perfil ya marcado en localStorage, evitando consulta.");
-          //router.push("/partidos");
 
-          if (router.currentRoute.value.path !== "/inicio") {
+          // ⚠️ SOLO REDIRIGIMOS A /inicio SI NO ESTAMOS EN UNA SUBRUTA DE /inicio
+          if (!router.currentRoute.value.path.startsWith("/inicio")) {
+            console.log(`## Mandando a INICIO: ${event}`);
             router.push("/inicio");
+          } else {
+            console.log("🔄 Ya estamos en una subruta de /inicio, no redirigir.");
           }
           return;
         }
@@ -92,14 +98,14 @@ export default defineComponent({
           console.error("Error verificando perfil:", err);
         }
 
-        // Redirigir solo si no esta en una ruta protegida
-        if (router.currentRoute.value.path !== "/inicio") {
+        if (!router.currentRoute.value.path.startsWith("/inicio")) {
+          console.log(`@@ Mandando a INICIO: ${event}`);
           router.push("/inicio");
         }
       } else if (event === "SIGNED_OUT") {
         if (isMagicLinkFlow.value) {
           console.log("🔑 Magic link en proceso, ignorando SIGNED_OUT...");
-          return; // Ignorar SIGNED_OUT si es parte del flujo del magic link
+          return;
         }
 
         console.log("🚪 Usuario cerró sesión, limpiando localStorage...");
@@ -109,43 +115,39 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      
-      // Registrar el listener de cambios de estado de autenticación.
-      authListener = supabase.auth.onAuthStateChange(handleAuthStateChange);
+      console.log("🔄 Registrando listener de Supabase");
+      const { data: listener } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+      authListener = listener;
 
-      // Verificar la sesión activa inmediatamente.
-      const isAuthenticated = await checkSession();
-
-      if (isAuthenticated) {
-        console.log("Usuario autenticado, verificando perfil...");
-        const { data: session } = await supabase.auth.getSession();
-
-        if (session?.session?.user) {
-          await handleAuthStateChange("SIGNED_IN", session.session);
-        }
-
-        // Revisar cada 5 minutos si la sesión sigue activa.
-        sessionChecker = setInterval(checkSession, 5 * 60 * 1000); // 5 minutos
+      const { data: session } = await supabase.auth.getSession();
+      if (session?.session?.user) {
+        console.log("✅ Usuario ya autenticado al cargar la app");
+        sessionRestored.value = true; // Marcamos la sesión como restaurada
+        await handleAuthStateChange("INITIAL_SESSION", session.session);
       }
 
-      // Detectar si el usuario está en el flujo del magic link
+      sessionChecker = setInterval(async () => {
+        const isValid = await checkSession();
+        if (!isValid && sessionChecker) {
+          clearInterval(sessionChecker);
+        }
+      }, 5 * 60 * 1000);
+
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has("type") && urlParams.get("type") === "magiclink") {
-        isMagicLinkFlow.value = true; // Activar la bandera
+        isMagicLinkFlow.value = true;
         console.log("Es magiclink flow");
       } else {
-          console.log("No es magiclink flow");
+        console.log("No es magiclink flow");
       }
     });
 
     onBeforeUnmount(() => {
-      // Desregistrar el listener cuando el componente se destruya.
       if (authListener) {
         authListener.unsubscribe();
         console.log("Auth listener eliminado.");
       }
 
-      // Limpiar el setInterval cuando el componente se destruya.
       if (sessionChecker) {
         clearInterval(sessionChecker);
         console.log("Intervalo de verificación de sesión eliminado.");
