@@ -2,9 +2,7 @@
 import { defineComponent, onMounted, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase/client";
-import type { Session } from "@supabase/supabase-js";
-import type { Subscription } from "@supabase/supabase-js";
-
+import type { Session, Subscription } from "@supabase/supabase-js";
 
 export default defineComponent({
   name: "App",
@@ -33,16 +31,20 @@ export default defineComponent({
 
     const handleAuthStateChange = async (event: string, session: Session | null) => {
       console.log(`🟡 Evento de autenticación detectado: ${event}`);
+      console.log(`🌍 Ruta actual antes de procesar evento: ${router.currentRoute.value.path}`);
 
       if (event === "INITIAL_SESSION") {
+        if (initialSessionChecked.value) {
+          console.log("🔄 Sesión inicial ya procesada, ignorando evento duplicado.");
+          return;
+        }
         console.log("🔄 Sesión inicial detectada, evitando redirección.");
         initialSessionChecked.value = true;
-        sessionRestored.value = !!session?.user; // Marcar si la sesión ya estaba activa
+        sessionRestored.value = !!session?.user;
         return;
       }
 
       if (event === "SIGNED_IN" && session?.user) {
-        // ⚠️ IGNORAMOS SIGNED_IN SI LA SESIÓN YA ESTABA RESTAURADA
         if (sessionRestored.value) {
           console.log("🚀 Sesión ya restaurada, ignorando evento SIGNED_IN.");
           return;
@@ -55,7 +57,6 @@ export default defineComponent({
         if (localStorage.getItem(profileExistsKey)) {
           console.log("✅ Perfil ya marcado en localStorage, evitando consulta.");
 
-          // ⚠️ SOLO REDIRIGIMOS A /inicio SI NO ESTAMOS EN UNA SUBRUTA DE /inicio
           if (!router.currentRoute.value.path.startsWith("/inicio")) {
             console.log(`## Mandando a INICIO: ${event}`);
             router.push("/inicio");
@@ -117,16 +118,32 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      console.log("🔄 Registrando listener de Supabase");
-      const { data } = supabase.auth.onAuthStateChange(handleAuthStateChange);
-      authListener = data.subscription; // Guardamos la suscripcion
-
+      console.log("🔄 Obteniendo sesión antes de registrar el listener...");
       const { data: session } = await supabase.auth.getSession();
+
       if (session?.session?.user) {
-        console.log("✅ Usuario ya autenticado al cargar la app");
-        sessionRestored.value = true; // Marcamos la sesión como restaurada
-        await handleAuthStateChange("INITIAL_SESSION", session.session);
+        console.log("✅ Usuario ya autenticado antes de registrar el listener");
+        sessionRestored.value = true;
+        initialSessionChecked.value = true; // Evita procesamiento innecesario de INITIAL_SESSION
+
+        // 🚀 Esperar a que Vue Router detecte la ruta correcta antes de redirigir
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      
+        // 🚀 Nueva validación: Solo redirigir a "/inicio" si estamos en "/" o "/login"
+        const currentPath = router.currentRoute.value.path;
+        console.log(`🌍 Ruta actual después del reload: ${currentPath}`);
+
+    
+        if (currentPath === "/" || currentPath === "/login") {
+          console.log("🔄 Redirigiendo a /inicio después de autenticación.");
+          router.push("/inicio");
+        } else {
+          console.log(`✅ Usuario ya está en ${currentPath}, no redirigir.`);
+        }      
       }
+
+      console.log("🔄 Registrando listener de Supabase");
+      authListener = supabase.auth.onAuthStateChange(handleAuthStateChange).data.subscription; 
 
       sessionChecker = setInterval(async () => {
         const isValid = await checkSession();

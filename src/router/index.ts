@@ -50,16 +50,31 @@ const router = createRouter({
 
 // 🔹 Bloquear rutas protegidas si no hay sesión
 router.beforeEach(async (to, _from, next) => {
-  if (to.meta.requiresAuth) {
-    const { data } = await supabase.auth.getUser();
-    if (!data?.user) {
-      next("/login"); // 🔹 Redirigir a login si no está autenticado
-    } else {
-      next();
-    }
-  } else {
-    next();
+  // Obtener la sesión de manera más eficiente
+  const { data: sessionData } = await supabase.auth.getSession();
+  const isAuthenticated = !!sessionData?.session?.user;
+
+  // 🔹 Bloquear rutas protegidas si no está autenticado
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    console.log("🚫 Acceso denegado, redirigiendo a /login");
+    return next("/login");
   }
+
+  // 🔹 Si hay sesión y estamos en "/" (inicio tras reload), intenta restaurar la última ruta
+  if (isAuthenticated && to.path === "/") {
+    const lastRoute = sessionStorage.getItem("lastRoute");
+    if (lastRoute && lastRoute !== "/") {
+      console.log(`🔄 Restaurando última ruta: ${lastRoute}`);
+      return next(lastRoute);
+    }
+  }
+
+  // 🔹 Guardar la última ruta solo si está autenticado y no es "/login"
+  if (isAuthenticated && to.path !== "/login") {
+    sessionStorage.setItem("lastRoute", to.fullPath);
+  }
+
+  next();
 });
  
 export default router;
