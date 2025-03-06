@@ -9,48 +9,14 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     let authListener: Subscription | null = null;
-    let sessionChecker: NodeJS.Timeout | null = null;
-
     const isMagicLinkFlow = ref(false);
-    const initialSessionChecked = ref(false);
-    const sessionRestored = ref(false);
-
-    const checkSession = async () => {
-      console.log("⚠️ Check Sesión");
-      const { data, error } = await supabase.auth.getUser();
-
-      if (error || !data?.user) {
-        console.log("⚠️ No hay usuario autenticado, redirigiendo a login...");
-        await supabase.auth.signOut();
-        router.push("/login");
-        return false;
-      }
-
-      return true;
-    };
 
     const handleAuthStateChange = async (event: string, session: Session | null) => {
       console.log(`🟡 Evento de autenticación detectado: ${event}`);
       console.log(`🌍 Ruta actual antes de procesar evento: ${router.currentRoute.value.path}`);
 
-      if (event === "INITIAL_SESSION") {
-        if (initialSessionChecked.value) {
-          console.log("🔄 Sesión inicial ya procesada, ignorando evento duplicado.");
-          return;
-        }
-        console.log("🔄 Sesión inicial detectada, evitando redirección.");
-        initialSessionChecked.value = true;
-        sessionRestored.value = !!session?.user;
-        return;
-      }
-
       if (event === "SIGNED_IN" && session?.user) {
-        if (sessionRestored.value) {
-          console.log("🚀 Sesión ya restaurada, ignorando evento SIGNED_IN.");
-          return;
-        }
-
-        console.log("Usuario autenticado:", session.user);
+        console.log("✅ Usuario autenticado:", session.user);
         isMagicLinkFlow.value = false;
 
         const profileExistsKey = `profile_exists_${session.user.id}`;
@@ -118,22 +84,18 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      console.log("🔄 Esperando que Vue Router esté listo...");
+      await router.isReady(); // Esperar hasta que Vue Router haya restaurado la ruta correctamente
+      
       console.log("🔄 Obteniendo sesión antes de registrar el listener...");
       const { data: session } = await supabase.auth.getSession();
 
       if (session?.session?.user) {
         console.log("✅ Usuario ya autenticado antes de registrar el listener");
-        sessionRestored.value = true;
-        initialSessionChecked.value = true; // Evita procesamiento innecesario de INITIAL_SESSION
 
-        // 🚀 Esperar a que Vue Router detecte la ruta correcta antes de redirigir
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      
-        // 🚀 Nueva validación: Solo redirigir a "/inicio" si estamos en "/" o "/login"
         const currentPath = router.currentRoute.value.path;
         console.log(`🌍 Ruta actual después del reload: ${currentPath}`);
 
-    
         if (currentPath === "/" || currentPath === "/login") {
           console.log("🔄 Redirigiendo a /inicio después de autenticación.");
           router.push("/inicio");
@@ -144,13 +106,6 @@ export default defineComponent({
 
       console.log("🔄 Registrando listener de Supabase");
       authListener = supabase.auth.onAuthStateChange(handleAuthStateChange).data.subscription; 
-
-      sessionChecker = setInterval(async () => {
-        const isValid = await checkSession();
-        if (!isValid && sessionChecker) {
-          clearInterval(sessionChecker);
-        }
-      }, 5 * 60 * 1000);
 
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has("type") && urlParams.get("type") === "magiclink") {
@@ -165,11 +120,6 @@ export default defineComponent({
       if (authListener) {
         authListener.unsubscribe();
         console.log("Auth listener eliminado.");
-      }
-
-      if (sessionChecker) {
-        clearInterval(sessionChecker);
-        console.log("Intervalo de verificación de sesión eliminado.");
       }
     });
 

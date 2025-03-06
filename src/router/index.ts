@@ -60,20 +60,6 @@ router.beforeEach(async (to, _from, next) => {
     return next("/login");
   }
 
-  // 🔹 Si hay sesión y estamos en "/" (inicio tras reload), intenta restaurar la última ruta
-  if (isAuthenticated && to.path === "/") {
-    const lastRoute = sessionStorage.getItem("lastRoute");
-    if (lastRoute && lastRoute !== "/") {
-      console.log(`🔄 Restaurando última ruta: ${lastRoute}`);
-      return next(lastRoute);
-    }
-  }
-
-  // 🔹 Guardar la última ruta solo si está autenticado y no es "/login"
-  if (isAuthenticated && to.path !== "/login") {
-    sessionStorage.setItem("lastRoute", to.fullPath);
-  }
-
   next();
 });
  
