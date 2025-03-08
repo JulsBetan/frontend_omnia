@@ -10,6 +10,8 @@ import CompaniesUpdate from "../components/Inicio/CompaniesUpdate.vue";
 import Units from "../components/Inicio/Units.vue";
 import UnitsCreate from "../components/Inicio/UnitsCreate.vue";
 import UnitsUpdate from "../components/Inicio/UnitsUpdate.vue";
+import Rules from "../components/Inicio/Rules.vue";
+import RulesCreate from "../components/Inicio/RulesCreate.vue";
 import Participants from "../components/Inicio/Participants.vue";
 import Detalle from "../components/Partidos/Detalle.vue";
 // import axios from "axios";
@@ -38,6 +40,8 @@ const routes = [
       { path: 'unidades', component: Units },
       { path: 'unidades/alta', component: UnitsCreate },
       { path: 'unidades/editar/:id', component: UnitsUpdate },
+      { path: 'reglas', component: Rules },
+      { path: 'reglas/alta', component: RulesCreate },
       { path: 'participantes', component: Participants },
     ]
   },

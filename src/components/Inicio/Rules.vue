@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -85,7 +86,7 @@ const handleSearch = () => {
 // Función para manejar el botón "Nuevo"
 const handleNew = () => {
   console.log('Nuevo');
-  router.push('/inicio/empresas/alta');
+  router.push('/inicio/reglas/alta');
 };
 
 // Redirigir a la página de actualización de una empresa
@@ -104,7 +105,7 @@ const navigateToUpdate = (companyId: number) => {
         class="back-icon"
         @click="goBack"
       />
-      <h2 class="title">Consulta Empresas</h2>
+      <h2 class="title">Consulta Reglas Fondo de Ahorro</h2>
     </div>
     <div class="table-container">
       <!-- Contenedor "actions" -->
