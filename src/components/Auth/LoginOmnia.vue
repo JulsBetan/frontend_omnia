@@ -161,8 +161,22 @@ export default defineComponent({
       }
     };
 
-    const loginWithMicrosoft = () => {
+    const loginWithMicrosoft = async () => {
       // Implementación de login con Microsoft
+      console.log("Intentando iniciar sesión con Microsoft...");
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "azure",
+        options: {
+          redirectTo: import.meta.env.VITE_SUPABASE_REDIRECT_URL, // URL a la que redirigir tras el login
+          queryParams: { prompt: "select_account"}
+        },
+      });
+
+      if (error) {
+        console.error("Error en autenticación con Microsoft:", error);
+        Swal.fire({ icon: "error", title: "Error", text: error.message });
+      }
     };
 
     const redirectToSignup = () => {

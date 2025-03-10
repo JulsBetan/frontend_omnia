@@ -50,7 +50,7 @@
               <ul v-if="submenuVisible === 'administracion'" class="submenu">
                 <li @click="navigateTo('/inicio/empresas')">Empresas</li>
                 <li @click="navigateTo('/inicio/unidades')">Unidades organizacionales</li>
-                <li @click="navigateTo('/inicio/reglas')">Reglas fonde de ahorro</li>
+                <li @click="navigateTo('/inicio/reglas')">Reglas fondo de ahorro</li>
               </ul>
             </li>
             <li>
