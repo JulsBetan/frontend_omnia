@@ -165,7 +165,7 @@ export default defineComponent({
       // Implementación de login con Microsoft
       console.log("Intentando iniciar sesión con Microsoft...");
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "azure",
         options: {
           redirectTo: import.meta.env.VITE_SUPABASE_REDIRECT_URL, // URL a la que redirigir tras el login
@@ -176,6 +176,8 @@ export default defineComponent({
       if (error) {
         console.error("Error en autenticación con Microsoft:", error);
         Swal.fire({ icon: "error", title: "Error", text: error.message });
+      } else {
+        console.log("Respuesta de supabase:", data);
       }
     };
 
