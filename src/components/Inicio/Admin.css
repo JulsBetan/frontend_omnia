@@ -70,8 +70,16 @@ input, select {
   margin-top: 100px;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centra los botones horizontalmente */
-  gap: 20px; /* Espacio horizontal entre los botones */
+  justify-content: space-between; /* Distribuye los elementos */
+  width: 100%;
+}
+
+.center-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* Espacio entre los botones */
+  flex-grow: 1; /* Permite que se centren */
 }
 
 .cancel-button {
@@ -117,10 +125,10 @@ input, select {
   display: flex;
   align-items: center;
   padding: 8px 16px;
-  border: none;
+  border: 1px solid red;
   border-radius: 20px;
-  background-color: red;
-  color: white;
+  background-color: transparent;
+  color: red;
   font-size: 1rem;
   cursor: pointer;
   width: 140px;
@@ -129,4 +137,5 @@ input, select {
 
 .delete-button:hover {
   background-color: darkred;
+  color: white;
 }

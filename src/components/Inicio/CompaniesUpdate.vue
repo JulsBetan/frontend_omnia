@@ -132,18 +132,20 @@ const goBack = () => {
       </div>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <div class="button-group">
-        <button @click="goBack" class="cancel-button">Cancelar</button>
-        <button @click="updateCompany" class="save-button">
-          <img 
-            src="/assets/images/icons/saveIconW@3x.png" 
-            alt="Guardar" 
-            class="save-icon"
-          />
-          Guardar
-        </button>
+        <div class="center-buttons">
+          <button @click="goBack" class="cancel-button">Cancelar</button>
+          <button @click="updateCompany" class="save-button">
+            <img 
+              src="/assets/images/icons/saveIconW@3x.png" 
+              alt="Guardar" 
+              class="save-icon"
+            />
+            Guardar
+          </button>
+        </div>
         <button @click="deleteCompany" class="delete-button">
           <img 
-            src="/assets/images/icons/deleteIcon@3x.png" 
+            src="/assets/images/icons/deleteRed@3x.png" 
             alt="Eliminar" 
             class="delete-icon"
           />

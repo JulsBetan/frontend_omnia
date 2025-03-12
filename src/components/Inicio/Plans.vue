@@ -1,18 +1,17 @@
-
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { supabase } from '@/supabase/client';
 
-interface Company {
-  id: number;
-  business_name: string;
-  industry: string;
-  sector: string;
-  code: string;
+interface Plan {
+  id: string;
+  plan_name: string;
+  plan_type: string | null;
+  settlement_type: string | null;
+  last_modified: string;
 }
 
-const companies = ref<Company[]>([]);
+const plans = ref<Plan[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const searchQuery = ref('');
@@ -23,42 +22,45 @@ const router = useRouter();
 const itemsPerPage = 5;
 const currentPage = ref(1);
 
-const fetchCompanies = async () => {
+// Obtener los planes desde Supabase
+const fetchPlans = async () => {
   loading.value = true;
   error.value = null;
-  
+
   const { data, error: fetchError } = await supabase
-    .from('companies')
-    .select('*');
+    .from('plans')
+    .select('id, plan_name, plan_type, settlement_type, last_modified');
 
   if (fetchError) {
     error.value = 'Error al cargar los datos';
     console.error(fetchError);
   } else {
-    companies.value = data;
+    plans.value = data;
   }
 
   loading.value = false;
 };
 
-onMounted(fetchCompanies);
+onMounted(fetchPlans);
 
-const filteredCompanies = computed(() => {
+// Filtrado de planes por búsqueda
+const filteredPlans = computed(() => {
   if (!searchQuery.value) {
-    return companies.value;
+    return plans.value;
   }
   const query = searchQuery.value.toLowerCase();
-  return companies.value.filter(company =>
-    company.business_name.toLowerCase().includes(query)
+  return plans.value.filter(plan =>
+    plan.plan_name.toLowerCase().includes(query)
   );
 });
 
-const paginatedCompanies = computed(() => {
+// Paginación de los planes
+const paginatedPlans = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
-  return filteredCompanies.value.slice(start, start + itemsPerPage);
+  return filteredPlans.value.slice(start, start + itemsPerPage);
 });
 
-const totalPages = computed(() => Math.ceil(filteredCompanies.value.length / itemsPerPage));
+const totalPages = computed(() => Math.ceil(filteredPlans.value.length / itemsPerPage));
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
@@ -80,7 +82,6 @@ const goBack = () => {
 // Función para manejar la búsqueda
 const handleSearch = () => {
   console.log('Búsqueda:', searchQuery.value);
-  // Aquí puedes implementar la lógica de búsqueda
 };
 
 // Función para manejar el botón "Nuevo"
@@ -89,11 +90,10 @@ const handleNew = () => {
   router.push('/inicio/reglas/alta');
 };
 
-// Redirigir a la página de actualización de una empresa
-const navigateToUpdate = (companyId: number) => {
-  router.push(`/inicio/empresas/editar/${companyId}`);
+// Redirigir a la página de actualización de un plan
+const navigateToUpdate = (planId: string) => {
+  router.push(`/inicio/planes/editar/${planId}`);
 };
-
 </script>
 
 <template>
@@ -105,7 +105,7 @@ const navigateToUpdate = (companyId: number) => {
         class="back-icon"
         @click="goBack"
       />
-      <h2 class="title">Consulta Reglas Fondo de Ahorro</h2>
+      <h2 class="title">Consulta Planes</h2>
     </div>
     <div class="table-container">
       <!-- Contenedor "actions" -->
@@ -114,7 +114,7 @@ const navigateToUpdate = (companyId: number) => {
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="Buscar empresa..."
+          placeholder="Buscar plan..."
           class="search-input"
         />
         <!-- Botón Buscar -->
@@ -138,22 +138,22 @@ const navigateToUpdate = (companyId: number) => {
       <table v-else class="data-table">
         <thead>
           <tr>
-            <th>Razón Social</th>
-            <th>Giro</th>
-            <th>Sector</th>
-            <th>Código</th>
+            <th>Nombre del Plan</th>
+            <th>Tipo de Plan</th>
+            <th>Liquidación</th>
+            <th>Última Modificación</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(company, index) in paginatedCompanies" :key="company.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray'">
+          <tr v-for="(plan, index) in paginatedPlans" :key="plan.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray'">
             <td>
-                <a class="element-link" @click="navigateToUpdate(company.id)">
-                  {{ company.business_name }}
+                <a class="element-link" @click="navigateToUpdate(plan.id)">
+                  {{ plan.plan_name }}
                 </a>
             </td>
-            <td>{{ company.industry }}</td>
-            <td>{{ company.sector }}</td>
-            <td>{{ company.code }}</td>
+            <td>{{ plan.plan_type || 'No especificado' }}</td>
+            <td>{{ plan.settlement_type || 'No especificado' }}</td>
+            <td>{{ new Date(plan.last_modified).toLocaleDateString('es-MX') }}</td>
           </tr>
         </tbody>
       </table>
