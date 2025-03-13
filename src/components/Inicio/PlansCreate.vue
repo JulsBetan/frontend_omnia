@@ -5,6 +5,16 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+// 🔹 Obtiene automáticamente el `base` definido en `vite.config.ts`
+const baseURL = import.meta.env.BASE_URL;
+
+// 🔹 Mapeo de iconos con rutas correctas
+const iconMap: Record<string, string> = {
+  "Fondo de ahorro": `${baseURL}assets/images/icons/moneyIcon@3x.png`,
+  "Caja de ahorro": `${baseURL}assets/images/icons/savingIcon@3x.png`,
+  "Fondo de pensiones": `${baseURL}assets/images/icons/shieldIcon@3x.png`
+};
+
 // Estado para seleccionar el tipo de plan
 const selectedPlan = ref('Fondo de ahorro');
 
@@ -70,11 +80,7 @@ const goBack = () => {
         :class="['tab-option', { active: selectedPlan === plan }]"
         @click="selectPlan(plan)"
       >
-        <img 
-          :src="`/omnia/assets/images/icons/${plan === 'Fondo de ahorro' ? 'moneyIcon@3x.png' : plan === 'Caja de ahorro' ? 'savingIcon@3x.png' : 'shieldIcon@3x.png'}`" 
-          class="tab-icon"
-          alt="Icono"
-        />
+        <img :src="iconMap[plan]" class="tab-icon" alt="Icono" />
         <span>{{ plan }}</span>
         <div class="underline" v-if="selectedPlan === plan"></div>
       </div>
@@ -175,57 +181,4 @@ const goBack = () => {
   margin-bottom: 5px;
 }
 
-.form-container {
-  background-color: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 90%;
-}
-
-.button-group {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.cancel-button, .save-button {
-  width: 140px;
-}
-
-.cancel-button {
-  background-color: transparent;
-  color: #834f99;
-  border: 1px solid #834f99;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.cancel-button:hover {
-  background-color: #834f99;
-  color: white;
-}
-
-.save-button {
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 20px;
-  background-color: #834f99;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.save-button:hover {
-  background-color: #6b3d7f;
-}
-
-.save-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-}
 </style>
