@@ -87,7 +87,7 @@ const handleSearch = () => {
 // Función para manejar el botón "Nuevo"
 const handleNew = () => {
   console.log('Nuevo');
-  router.push('/inicio/reglas/alta');
+  router.push('/inicio/planes/alta');
 };
 
 // Redirigir a la página de actualización de un plan
