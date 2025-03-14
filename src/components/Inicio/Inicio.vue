@@ -316,12 +316,17 @@ const navigateTo = (route: string) => {
   display: flex;
   flex-grow: 1;
   position: relative; /* Necesario para posicionar el menú de manera absoluta */
+  overflow: hidden;
+  height: calc(100vh - 100px); /* Ajusta según la altura de tus headers */
 }
 
 .main-content {
   flex-grow: 1;
   margin-left: 60px;
+  max-height: 100%;
   overflow: auto;
+  padding: 20px; /* Añade un poco de espacio alrededor del contenido */
+  border-radius: 10px;
 }
 
 .progress-indicator {
@@ -370,7 +375,7 @@ const navigateTo = (route: string) => {
   border-radius: 15px; /* Esquinas redondeadas */
   margin: 5px 0px 0px 10px; /* Margen para separar el menú del borde */
   transition: width 0.3s ease;
-  height: 80%; /* Ocupa toda la altura disponible */
+  height: 600px; /* Ocupa toda la altura disponible */
   position: absolute;
   z-index: 10;
   overflow: hidden; 
@@ -478,10 +483,6 @@ const navigateTo = (route: string) => {
   width: 200px; /* Ancho expandido del menú */
   position: absolute; /* Posicionamiento absoluto para superponerse */
   z-index: 10;
-}
-
-.menu-vertical:not(.expanded) {
-    /*overflow: hidden;    /* Evita que el contenido sea accesible */
 }
 
 .menu-vertical.expanded .menu-text {
