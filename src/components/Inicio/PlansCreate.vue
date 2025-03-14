@@ -15,6 +15,11 @@ const iconMap: Record<string, string> = {
   "Fondo de pensiones": `${baseURL}assets/images/icons/shieldIcon@3x.png`
 };
 
+const iconToggleMap: Record<string, string> = {
+  "open": `${baseURL}assets/images/icons/arrOpen@3x.png`,
+  "close": `${baseURL}assets/images/icons/arrClose@3x.png`
+};
+
 // Estado para seleccionar el tipo de plan
 const selectedPlan = ref('Fondo de ahorro');
 
@@ -23,7 +28,7 @@ const businessName = ref('');
 const liquidation = ref('');
 const uploadedFiles = ref(["reglamento del fondo de ahorro.docx", "EstatutosFA.pdf"]);
 const errorMessage = ref('');
-const expandedSection = ref<string | null>(null);
+const expandedSections = ref<string[]>([]);
 
 const industry = ref('');
 const sector = ref('');
@@ -34,7 +39,11 @@ const selectPlan = (plan: string) => {
 };
 
 const toggleSection = (section: string) => {
-  expandedSection.value = expandedSection.value === section ? null : section;
+  if (expandedSections.value.includes(section)) {
+    expandedSections.value = expandedSections.value.filter(s => s !== section);
+  } else {
+    expandedSections.value.push(section);
+  }
 };
 
 const handleFileUpload = (event: Event) => {
@@ -127,7 +136,7 @@ const openFileExplorer = () => {
           <div class="upload-container">
             <label>Estatus o reglamentos del plan:</label>
             <div class="dropzone">
-              <img src="/omnia/assets/images/icons/upload-grey@3x.png" alt="Upload" class="upload-icon"/>
+              <img src="/assets/images/icons/upload-grey@3x.png" alt="Upload" class="upload-icon"/>
               <p class="drag-text">Arrastra y suelta un archivo aquí</p>
               <p class="file-format-text">Documento Word o PDF</p>
               <input ref="fileInput" type="file" @change="handleFileUpload" hidden />
@@ -139,7 +148,7 @@ const openFileExplorer = () => {
             <ul>
               <li v-for="(file, index) in uploadedFiles" :key="index">
                 {{ file }}
-                <img src="/omnia/assets/images/icons/delete-grey@3x.png" alt="Delete" class="delete-icon" @click="deleteFile(index)"/>
+                <img src="/assets/images/icons/delete-grey@3x.png" alt="Delete" class="delete-icon" @click="deleteFile(index)"/>
               </li>
             </ul>
           </div>
@@ -148,11 +157,11 @@ const openFileExplorer = () => {
         <div class="rules-section">
           <h3>Reglas del plan</h3>
           <div v-for="section in ['Contribuciones', 'Préstamos', 'Liquidación']" :key="section" class="collapsible">
-            <div class="collapsible-header" :class="{ active: expandedSection === section }" @click="toggleSection(section)">
+            <div class="collapsible-header" :class="{ active: expandedSections.includes(section) }" @click="toggleSection(section)">
               <span>{{ section }}</span>
-              <img :src="expandedSection === section ? '/omnia/assets/images/icons/arrClose@3x.png' : '/omnia/assets/images/icons/arrOpen@3x.png'" class="toggle-icon"/>
+              <img :src="expandedSections.includes(section) ? iconToggleMap['close'] : iconToggleMap['open']" class="toggle-icon"/>
             </div>
-            <div v-if="expandedSection === section" class="collapsible-content">
+            <div v-if="expandedSections.includes(section)" class="collapsible-content">
               <p>Contenido de la sección {{ section }}...</p>
             </div>
           </div>
