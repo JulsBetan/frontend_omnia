@@ -23,7 +23,11 @@ const businessName = ref('');
 const liquidation = ref('');
 const uploadedFiles = ref(["reglamento del fondo de ahorro.docx", "EstatutosFA.pdf"]);
 const errorMessage = ref('');
-const expandedSection = ref(null);
+const expandedSection = ref<string | null>(null);
+
+const industry = ref('');
+const sector = ref('');
+const code = ref('');
 
 const selectPlan = (plan: string) => {
   selectedPlan.value = plan;
@@ -72,6 +76,15 @@ const saveCompany = async () => {
 const goBack = () => {
   router.back();
 };
+
+
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const openFileExplorer = () => {
+  if (fileInput.value) {
+    fileInput.value.click();
+  }
+};
 </script>
 
 <template>
@@ -117,8 +130,8 @@ const goBack = () => {
               <img src="/omnia/assets/images/icons/upload-grey@3x.png" alt="Upload" class="upload-icon"/>
               <p class="drag-text">Arrastra y suelta un archivo aquí</p>
               <p class="file-format-text">Documento Word o PDF</p>
-              <input type="file" @change="handleFileUpload" hidden id="fileInput"/>
-              <button class="explore-button" @click="document.getElementById('fileInput').click()">Explorar</button>
+              <input ref="fileInput" type="file" @change="handleFileUpload" hidden />
+              <button class="explore-button" @click="openFileExplorer">Explorar</button>
             </div>
           </div>
           <div class="uploaded-files">
