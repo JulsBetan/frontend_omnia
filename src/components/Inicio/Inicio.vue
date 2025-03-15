@@ -325,8 +325,7 @@ const navigateTo = (route: string) => {
   margin-left: 60px;
   max-height: 100%;
   overflow: auto;
-  padding: 20px; /* Añade un poco de espacio alrededor del contenido */
-  border-radius: 10px;
+  padding: 0px; /* Añade un poco de espacio alrededor del contenido */
 }
 
 .progress-indicator {
